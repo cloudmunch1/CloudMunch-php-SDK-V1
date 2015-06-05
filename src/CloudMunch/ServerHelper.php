@@ -1,5 +1,6 @@
 <?php
-require_once ("sshConnection.php");
+namespace CloudMunch;
+
 require_once ("cmDataManager.php");
 require_once ("AppErrorLogHandler.php");
 require_once ("Server.php");

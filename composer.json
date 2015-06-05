@@ -1,0 +1,28 @@
+{
+    "name": "CloudMunch/php-sdk-v1",
+    "description": "CloudMunch SDK for PHP",
+    "keywords": ["CloudMunch", "sdk"],
+    "type": "library",
+    "homepage": "https://github.com/cloudmunch1/CloudMunch-php-SDK-V1",
+    "license": "CloudMunch Platform",
+    "authors": [
+        {
+            "name": "CloudMunch",
+            "homepage": "https://github.com/cloudmunch1/CloudMunch-php-SDK-V1/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+       
+    },
+    "suggest": {
+        
+    },
+    "autoload": {
+        "psr-0": {
+            "CloudMunch": "src/"
+        }
+    }
+}

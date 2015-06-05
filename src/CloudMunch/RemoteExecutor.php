@@ -1,5 +1,5 @@
 <?php
-
+namespace CloudMunch;
 class RemoteExecutor {
 
 	private $connection;

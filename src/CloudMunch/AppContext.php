@@ -1,14 +1,13 @@
 <?php
-/*
- * Created on 05-Feb-2015
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
+namespace CloudMunch;
+
  
  /**
-  * This class is to create Applictaion Context object that has all the environment variables needed 
-  * for app runtime.
+  * Class AppContext
+  * @package CloudMunch
+  * @author Rosmi
+  * This class is the Applictaion Context object that has all the environment variables needed 
+  * for plugin runtime.
   */
  class AppContext{
  	private $masterurl = "";
@@ -16,6 +15,7 @@
 	private $domainName="";
 	private $project="";
 	private $job="";
+	
 	
 	function getMasterURL(){
 		return $this->masterurl;

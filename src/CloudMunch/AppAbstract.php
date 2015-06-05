@@ -1,21 +1,16 @@
 <?php
 
-
-require_once ("cmDataManager.php");
+namespace CloudMunch;
+//require_once ("cmDataManager.php");
 require_once ("AppErrorLogHandler.php");
-require_once "Server.php";
-require_once "ServerHelper.php";
-require_once "AppContext.php";
-require_once 'Cloud/CloudServiceHelper.php';
-require_once "CloudmunchService.php";
+use CloudMunch\Cloud\CloudServiceHelper;
+use CloudMunch\Integrations\IntegrationHelper;
+use DateTime;
 
-/*
- * Created on 04-Feb-2015
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 /**
+ * Class AppAbstract
+ * @package CloudMunch
+ * @author Rosmi <rosmi@cloudmunch.com>
  * An abstract base class for Cloudmunch App Object, providing methods to read parameters,
  * create app context object and retreive service objects
  */
@@ -27,12 +22,14 @@ abstract class AppAbstract {
 	 abstract function process($processparameters);
 	function getInput() {
 		$argArray = $_SERVER['argv'];
+		echo sizeof($argArray);
 		for ($i = 0; $i < sizeof($argArray); $i++) {
 
 			switch ($argArray[$i]) {
 
 				case "-jsoninput" :
 					{
+						
 						$jsonParameters = $argArray[$i +1];
 
 						continue;
@@ -116,8 +113,9 @@ abstract class AppAbstract {
 		$cloudservice=null;
 		$CloudServiceHelper =new CloudServiceHelper();
 		$cloudservice= $CloudServiceHelper->getService($this->getParameterObject());
-		
-		$processparameters=array("appInput"=>$this->getParameterObject(), "cloudservice"=>$cloudservice);
+		$integrationHelper=new IntegrationHelper();
+		$integrationService=$integrationHelper->getService($this->getParameterObject());
+		$processparameters=array("appInput"=>$this->getParameterObject(), "cloudservice"=>$cloudservice,"integrationdetails"=>$integrationService);
 		return $processparameters;
 		
 		

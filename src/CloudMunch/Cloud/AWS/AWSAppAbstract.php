@@ -1,6 +1,7 @@
 <?php
-require_once '/var/cloudbox/awsdk2/aws.phar';
-require_once 'AppAbstract.php';
+namespace Cloudmunch\Cloud\AWS;
+//require_once '/var/cloudbox/awsdk2/aws.phar';
+use CloudMunch\AppAbstract;
 use Aws \ Common \ Enum \ Region;
 
 use Aws \ Common \ Aws;

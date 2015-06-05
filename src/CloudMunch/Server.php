@@ -1,4 +1,5 @@
 <?php
+namespace CloudMunch;
 /*
  * Created on 04-Feb-2015
  *

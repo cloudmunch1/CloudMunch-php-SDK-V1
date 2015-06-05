@@ -1,4 +1,5 @@
 <?php
+namespace CloudMunch;
 require_once ("AppErrorLogHandler.php");
 
 /*
@@ -10,6 +11,8 @@ require_once ("AppErrorLogHandler.php");
  /**
   * This class  connetcs to cloudmunch to update /retrieve data
   */
+
+class cmDataManager{
 function getDataForContext($servername, $context, $domain) {
 
 	$url = $servername . "/cbdata.php?context=" . $context . "&username=CI&domain=" . $domain;
@@ -167,7 +170,7 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	$dataarray=json_encode($contextarray);
 	$dataarray=urlencode($dataarray);
 	$message=urlencode($message);
-	//cbdata.php?action=NOTIFY&to=*&message=whatever message&usercontext={“project”:project name,”job”:jobname,”context”:”servers”,”id”:server name”}
+	//cbdata.php?action=NOTIFY&to=*&message=whatever message&usercontext={ï¿½projectï¿½:project name,ï¿½jobï¿½:jobname,ï¿½contextï¿½:ï¿½serversï¿½,ï¿½idï¿½:server nameï¿½}
 	//$data = "data=" . json_encode($serverArray);
 	$url = $serverurl . "/cbdata.php?action=NOTIFY&to=*&message=".$message."&usercontext=".$dataarray."&domain=" . $domain."&username=CI";
 	//$url=urlencode($url);
@@ -200,6 +203,7 @@ if($result === FALSE) {
 }else{
 	loghandler(INFO,"result:" . $result);
 	//echo "\nresult:" . $result.PHP_EOL;
+}
 }
 }
 ?>

@@ -1,15 +1,19 @@
 <?php
-require_once ("cmDataManager.php");
+
+namespace CloudMunch;
+use CloudMunch\cmDataManager;
+//require_once ("cmDataManager.php");
 require_once ("AppErrorLogHandler.php");
-/*
- * Created on 05-Feb-2015
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
+
+
+
 /**
+ * Class CloudmunchService
+ * @package CloudMunch
+ * @author Rosmi
  * This class provides the service methods for the apps to invoke action on cloudmunch
  */
+
 class CloudmunchService {
 	private $appContext = null;
 	public function __construct($appContext) {

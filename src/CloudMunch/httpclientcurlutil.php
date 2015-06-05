@@ -1,8 +1,8 @@
 <?php
 
-
+namespace CloudMunch;
 //TODO-VIVEK: remove if checking in this file
-require_once ("/var/cloudbox/CBApp/CMUtil/httpclientutil.php");
+require_once ("httpclientutil.php");
 
 
 /**

@@ -1,6 +1,5 @@
 <?php
-//include_once("statusLog.php");
-//require_once("/var/www/html/cloudbox/cmvaultutils.php");
+namespace CloudMunch;
 /*
  * Created on 22-Mar-2012
  *

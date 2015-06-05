@@ -1,11 +1,14 @@
 <?php
-require_once '/var/cloudbox/awsdk2/aws.phar';
+namespace CloudMunch\Cloud\AWS;
+//require_once '/var/cloudbox/awsdk2/aws.phar';
 //require_once 'AppAbstract.php';
 use Aws \ Common \ Enum \ Region;
 
 use Aws \ Common \ Aws;
 use Aws \ Ec2 \ Enum \ InstanceType;
-require_once 'Cloud/CloudServiceProvider.php';
+
+use CloudMunch\Cloud\CloudServiceProvider;
+
 
 /*
  * Created on 09-Feb-2015

@@ -1,10 +1,7 @@
 <?php
 
-/*
- * Created on 30-Dec-2014
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
+/**
+ * This file handles error/debug logs
  */
 
 const DEBUG = 'DEBUG';

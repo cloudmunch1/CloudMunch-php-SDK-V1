@@ -1,5 +1,5 @@
 <?php
-include_once ("/var/cloudbox/CBApp/CMUtil/httpclientcurlutil.php");
+include_once ("httpclientcurlutil.php");
 
 function & commandutils_getservercredentials($domain,$domainurl,$i_servername) {
 	$default=null;

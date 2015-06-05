@@ -1,5 +1,5 @@
 <?php
-
+namespace CloudMunch;
 /**
  * Performs requests on Cloudmunch API
  *
