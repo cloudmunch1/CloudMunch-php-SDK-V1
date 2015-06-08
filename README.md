@@ -2,7 +2,7 @@
 CloudMunch SDK for PHP provides helper classes for CloudMunch plugin development.
 
 ###Download SDK
-We recommend using Composer as package manager. All you need to install the sdk is to have the following entry in your composer.json file.
+We recommend using [Composer](https://getcomposer.org/ "Composer") as package manager. All you need to install the sdk is to have the following entry in your composer.json file.
 
 ```json
 {
