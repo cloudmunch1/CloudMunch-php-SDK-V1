@@ -34,8 +34,21 @@ class CloudmunchService {
 
 	}
 	
-	public function updateDataContext($masterurl, $context, $domain, $dataArray){
+public function updateDataContext( $context, $dataArray){
 		updateContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray);
+	}
+	
+	public function getDataFromContext($context){
+		return getDataForContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
+		
+	}
+	
+	public function updateCustomContext($context, $dataArray,$id){
+		updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
+	}
+	
+	public function getDataFromCustomContext($context){
+		getDataForCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
 	}
 }
 ?>

@@ -43,6 +43,11 @@ namespace CloudMunch\Cloud;
 		    	 $vsoService=new VSOServiceProvider();
 		    	 $cloudService=$vsoService->getCloudService($jsonParams);
 		    	 return $cloudService;
+		    	 case "Jenkins":
+		    	 	require_once 'Jenkins/JenkinsServiceProvider.php';
+		    	 	$jenService=new JenkinsServiceProvider();
+		    	 	$cloudService=$jenService->getCloudService($jsonParams);
+		    	 	return $cloudService;
 	    }
 	    }else{
 	    	return null;
