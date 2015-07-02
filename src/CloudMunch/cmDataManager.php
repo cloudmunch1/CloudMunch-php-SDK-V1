@@ -252,7 +252,9 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	$message=urlencode($message);
 	//cbdata.php?action=NOTIFY&to=*&message=whatever message&usercontext={�project�:project name,�job�:jobname,�context�:�servers�,�id�:server name�}
 	//$data = "data=" . json_encode($serverArray);
-	$url = $serverurl . "/cbdata.php?action=NOTIFY&to=*&message=".$message."&usercontext=".$dataarray."&domain=" . $domain."&username=CI";
+	$usercontext = "usercontext=" . $dataarray;
+//	$url = $serverurl . "/cbdata.php?action=NOTIFY&to=*&message=".$message."&usercontext=".$dataarray."&domain=" . $domain."&username=CI";
+	$url = $serverurl . "/cbdata.php?action=NOTIFY&to=*&message=".$message."&domain=" . $domain."&username=CI";
 	//$url=urlencode($url);
 	//echo "\nurl is:" . $url.PHP_EOL;
 
@@ -268,6 +270,7 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 		CURLOPT_FORBID_REUSE => 1,
 		CURLOPT_TIMEOUT => 20,
 		CURLOPT_FAILONERROR => 1,
+			CURLOPT_POSTFIELDS => $usercontext,
 		CURLOPT_POST => 1,
 		CURLOPT_VERBOSE => $curl_verbose,
 		CURLOPT_SSL_VERIFYPEER => false,
