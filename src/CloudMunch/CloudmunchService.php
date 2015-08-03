@@ -48,13 +48,27 @@ public function updateDataContext( $context, $dataArray){
 	public function updateCustomContext($context, $dataArray,$id){
 		updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
 	}
-	
-	public function getDataFromCustomContext($context){
-		getDataForCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
-	}
 
-	public function getDataFromCustomContextLatest($context) {
-		return $this->cmDataManager->getDataForContextLatest($this->appContext->getMasterURL(), $context);
+	/*
+	* This function accepts data in array format and converts to url string
+	*
+	* Example : 
+	*
+	* 	array(
+	*		'action' => 'listcustomcontext',
+	*		'domain' => 'test',
+	*		'project' => 'projectname',
+	*		'customcontext' => 'projectname_stories',
+	*		'fields' => 'sum(story_points)',
+	*		'username' => 'CI',
+	*		'group_by' => 'fix_versions',
+	*		'count' => '*',
+	*		'filter' => "{\"fix_versions\":\"10\"}"
+	*	);
+	* 
+	*/
+	public function getDataFromCustomContext($context) {
+		return $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), $context);
 	}
 }
 ?>
