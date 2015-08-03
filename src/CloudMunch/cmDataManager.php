@@ -79,7 +79,7 @@ function startDeployAction($servername, $project, $job_from_which_deploy_trigger
 function updateContext($masterurl, $context, $domain, $serverArray) {
 	//$serverArray=json_encode($serverArray);
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
-	global $curl_verbose;
+	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
 	$data = "data=" . json_encode($serverArray);
@@ -241,7 +241,7 @@ function updateServerDetailsList($dnsName = "", $instanceId = "", $amiName = "",
 }
 function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
-	global $curl_verbose;
+	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
 	
@@ -284,6 +284,7 @@ if($result === FALSE) {
 	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
 }else{
 	loghandler(INFO,"result:" . $result);
+	loghandler(INFO, "Notification send");
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 }

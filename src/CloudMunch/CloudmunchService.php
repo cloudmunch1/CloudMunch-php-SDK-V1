@@ -24,24 +24,21 @@ class CloudmunchService {
 
 	public function notifyUsers($message, $context, $id) {
 		$dataarray = array (
-		
+
 			"project" => $this->appContext->getProject(),
 			"job" => $this->appContext->getJob(),
 			"context" => $context,
 			"id" => $id
-		);
-		notifyUsersInCloudmunch($this->appContext->getMasterURL(), $message, $dataarray, $this->appContext->getDomainName());
-
-		loghandler(INFO, "Notification send");
-
+			);
+		return $this->cmDataManager->notifyUsersInCloudmunch($this->appContext->getMasterURL(), $message, $dataarray, $this->appContext->getDomainName());
 	}
 	
-public function updateDataContext( $context, $dataArray){
-		updateContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray);
+	public function updateDataContext( $context, $dataArray){
+		return $this->cmDataManager->updateContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray);
 	}
 	
 	public function getDataFromContext($context){
-		return getDataForContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
+		return $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
 		
 	}
 	
