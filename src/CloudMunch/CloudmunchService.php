@@ -46,7 +46,7 @@ public function updateDataContext( $context, $dataArray){
 	}
 	
 	public function updateCustomContext($context, $dataArray,$id){
-		updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
+		return $this->cmDataManager->updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
 	}
 
 	/*
