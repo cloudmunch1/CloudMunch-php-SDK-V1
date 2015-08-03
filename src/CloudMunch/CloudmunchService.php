@@ -16,8 +16,10 @@ require_once ("AppErrorLogHandler.php");
 
 class CloudmunchService {
 	private $appContext = null;
+	private $cmDataManager;
 	public function __construct($appContext) {
 		$this->appContext = $appContext;
+		$this->cmDataManager = new cmDataManager();
 	}
 
 	public function notifyUsers($message, $context, $id) {
@@ -49,6 +51,10 @@ public function updateDataContext( $context, $dataArray){
 	
 	public function getDataFromCustomContext($context){
 		getDataForCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
+	}
+
+	public function getDataFromCustomContextLatest($context) {
+		return $this->cmDataManager->getDataForContextLatest($this->appContext->getMasterURL(), $context);
 	}
 }
 ?>

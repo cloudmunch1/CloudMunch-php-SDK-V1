@@ -48,6 +48,40 @@ function getDataForContext($servername, $context, $domain) {
 	return $result;
 }
 
+function getDataForContextLatest($servername, $context) {
+
+	$context = http_build_query($context);
+	$context = urldecode($context);
+	$url = $servername . "/cbdata.php?" . $context;
+
+	$options = array (
+		CURLOPT_HEADER => 0,
+		CURLOPT_HTTPHEADER => array (
+			"Content-Type:application/json"
+		),
+		CURLOPT_URL => $url,
+		CURLOPT_FRESH_CONNECT => 1,
+		CURLOPT_RETURNTRANSFER => 1,
+		CURLOPT_FORBID_REUSE => 1,
+		CURLOPT_TIMEOUT => 200,
+		CURLOPT_HTTPAUTH => CURLAUTH_ANY,
+		CURLOPT_USERPWD => "",
+		CURLOPT_POST => 0,
+		CURLOPT_VERBOSE => 0,
+		CURLOPT_SSL_VERIFYHOST => 0, //2,
+	CURLOPT_SSL_VERIFYPEER => false
+	);
+
+	$post = curl_init();
+	curl_setopt_array($post, $options);
+	if (!$result = curl_exec($post)) {
+		trigger_error ( "Not able to retrieve data from cloudmunch", E_USER_ERROR );
+	}
+	curl_close($post);
+	
+	return $result;
+}
+
 function startDeployAction($servername, $project, $job_from_which_deploy_triggered, $env, $stage, $deploy_params, $step_config, $domain ) {
 	$url = $servername . "/cbdata.php?action=TRIGGERDEPLOYJOB&projectName=$project&jobName=$job_from_which_deploy_triggered&envName=$env&category=deploy&deploytype=$deploy_type&username=CI&domain=$domain&deployParams=".urlencode($deploy_params)."&stepConfig=".urlencode($step_config);
 	$options = array (
