@@ -65,7 +65,7 @@ class CloudmunchService {
 	* 
 	*/
 	public function getDataFromCustomContext($context) {
-		return $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), $context);
+		return $this->cmDataManager->getDataForCustomContext($this->appContext->getMasterURL(), $context);
 	}
 }
 ?>

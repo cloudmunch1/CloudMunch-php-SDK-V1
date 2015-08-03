@@ -13,12 +13,9 @@ require_once ("AppErrorLogHandler.php");
   */
 
 class cmDataManager{
-function getDataForContext($servername, $context) {
-
-	$context = http_build_query($context);
-	$context = urldecode($context);
-	$url = $servername . "/cbdata.php?" . $context;
-
+function getDataForContext($servername, $context, $domain) {
+	$url = $servername . "/cbdata.php?context=" . $context . "&username=CI&domain=" . $domain;
+	//echo "\nurl is:" . $url.PHP_EOL;
 	$options = array (
 		CURLOPT_HEADER => 0,
 		CURLOPT_HTTPHEADER => array (
@@ -36,13 +33,14 @@ function getDataForContext($servername, $context) {
 		CURLOPT_SSL_VERIFYHOST => 0, //2,
 	CURLOPT_SSL_VERIFYPEER => false
 	);
-
 	$post = curl_init();
 	curl_setopt_array($post, $options);
 	if (!$result = curl_exec($post)) {
 		trigger_error ( "Not able to retrieve data from cloudmunch", E_USER_ERROR );
+		//echo "\nNot able to retrieve data from cloudmunch" . (curl_error($post));
 	}
 	curl_close($post);
+	
 	
 	return $result;
 }
@@ -165,39 +163,37 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 
 }
 
-function getDataForCustomContext($servername, $context, $domain) {
+function getDataForCustomContext($servername, $context) {
 
+	$context = http_build_query($context);
+	$context = urldecode($context);
+	$url = $servername . "/cbdata.php?" . $context;
 
-	$url = $servername . "/cbdata.php?action=getcustomcontext&customcontext=" . $context . "&username=CI&domain=" . $domain;
-	//echo "\nurl is:" . $url.PHP_EOL;
 	$options = array (
-			CURLOPT_HEADER => 0,
-			CURLOPT_HTTPHEADER => array (
-					"Content-Type:application/json"
-			),
-			CURLOPT_URL => $url,
-			CURLOPT_FRESH_CONNECT => 1,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_FORBID_REUSE => 1,
-			CURLOPT_TIMEOUT => 200,
-			CURLOPT_HTTPAUTH => CURLAUTH_ANY,
-			CURLOPT_USERPWD => "",
-			CURLOPT_POST => 0,
-			CURLOPT_VERBOSE => 0,
-			CURLOPT_SSL_VERIFYHOST => 0, //2,
-			CURLOPT_SSL_VERIFYPEER => false
+		CURLOPT_HEADER => 0,
+		CURLOPT_HTTPHEADER => array (
+			"Content-Type:application/json"
+		),
+		CURLOPT_URL => $url,
+		CURLOPT_FRESH_CONNECT => 1,
+		CURLOPT_RETURNTRANSFER => 1,
+		CURLOPT_FORBID_REUSE => 1,
+		CURLOPT_TIMEOUT => 200,
+		CURLOPT_HTTPAUTH => CURLAUTH_ANY,
+		CURLOPT_USERPWD => "",
+		CURLOPT_POST => 0,
+		CURLOPT_VERBOSE => 0,
+		CURLOPT_SSL_VERIFYHOST => 0, //2,
+	CURLOPT_SSL_VERIFYPEER => false
 	);
 
 	$post = curl_init();
 	curl_setopt_array($post, $options);
 	if (!$result = curl_exec($post)) {
 		trigger_error ( "Not able to retrieve data from cloudmunch", E_USER_ERROR );
-		//echo "\nNot able to retrieve data from cloudmunch" . (curl_error($post));
 	}
 	curl_close($post);
-
-
-
+	
 	return $result;
 }
 
