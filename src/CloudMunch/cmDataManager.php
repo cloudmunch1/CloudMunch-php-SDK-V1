@@ -14,7 +14,6 @@ require_once ("AppErrorLogHandler.php");
 
 class cmDataManager{
 function getDataForContext($servername, $context, $domain) {
-
 	$url = $servername . "/cbdata.php?context=" . $context . "&username=CI&domain=" . $domain;
 	//echo "\nurl is:" . $url.PHP_EOL;
 	$options = array (
@@ -34,7 +33,6 @@ function getDataForContext($servername, $context, $domain) {
 		CURLOPT_SSL_VERIFYHOST => 0, //2,
 	CURLOPT_SSL_VERIFYPEER => false
 	);
-
 	$post = curl_init();
 	curl_setopt_array($post, $options);
 	if (!$result = curl_exec($post)) {
@@ -42,7 +40,6 @@ function getDataForContext($servername, $context, $domain) {
 		//echo "\nNot able to retrieve data from cloudmunch" . (curl_error($post));
 	}
 	curl_close($post);
-
 	
 	
 	return $result;
@@ -80,7 +77,7 @@ function startDeployAction($servername, $project, $job_from_which_deploy_trigger
 function updateContext($masterurl, $context, $domain, $serverArray) {
 	//$serverArray=json_encode($serverArray);
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
-	global $curl_verbose;
+	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
 	$data = "data=" . json_encode($serverArray);
@@ -166,39 +163,37 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 
 }
 
-function getDataForCustomContext($servername, $context, $domain) {
+function getDataForCustomContext($servername, $context) {
 
+	$context = http_build_query($context);
+	$context = urldecode($context);
+	$url = $servername . "/cbdata.php?" . $context;
 
-	$url = $servername . "/cbdata.php?action=getcustomcontext&customcontext=" . $context . "&username=CI&domain=" . $domain;
-	//echo "\nurl is:" . $url.PHP_EOL;
 	$options = array (
-			CURLOPT_HEADER => 0,
-			CURLOPT_HTTPHEADER => array (
-					"Content-Type:application/json"
-			),
-			CURLOPT_URL => $url,
-			CURLOPT_FRESH_CONNECT => 1,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_FORBID_REUSE => 1,
-			CURLOPT_TIMEOUT => 200,
-			CURLOPT_HTTPAUTH => CURLAUTH_ANY,
-			CURLOPT_USERPWD => "",
-			CURLOPT_POST => 0,
-			CURLOPT_VERBOSE => 0,
-			CURLOPT_SSL_VERIFYHOST => 0, //2,
-			CURLOPT_SSL_VERIFYPEER => false
+		CURLOPT_HEADER => 0,
+		CURLOPT_HTTPHEADER => array (
+			"Content-Type:application/json"
+		),
+		CURLOPT_URL => $url,
+		CURLOPT_FRESH_CONNECT => 1,
+		CURLOPT_RETURNTRANSFER => 1,
+		CURLOPT_FORBID_REUSE => 1,
+		CURLOPT_TIMEOUT => 200,
+		CURLOPT_HTTPAUTH => CURLAUTH_ANY,
+		CURLOPT_USERPWD => "",
+		CURLOPT_POST => 0,
+		CURLOPT_VERBOSE => 0,
+		CURLOPT_SSL_VERIFYHOST => 0, //2,
+	CURLOPT_SSL_VERIFYPEER => false
 	);
 
 	$post = curl_init();
 	curl_setopt_array($post, $options);
 	if (!$result = curl_exec($post)) {
 		trigger_error ( "Not able to retrieve data from cloudmunch", E_USER_ERROR );
-		//echo "\nNot able to retrieve data from cloudmunch" . (curl_error($post));
 	}
 	curl_close($post);
-
-
-
+	
 	return $result;
 }
 
@@ -242,7 +237,7 @@ function updateServerDetailsList($dnsName = "", $instanceId = "", $amiName = "",
 }
 function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
-	global $curl_verbose;
+	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
 	
@@ -285,6 +280,7 @@ if($result === FALSE) {
 	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
 }else{
 	loghandler(INFO,"result:" . $result);
+	loghandler(INFO, "Notification send");
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 }
