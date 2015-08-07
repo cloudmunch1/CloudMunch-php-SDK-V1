@@ -1,6 +1,29 @@
 <?php
 include_once ("httpclientcurlutil.php");
 
+function commandutils_checkConnect($dns) {
+    $connectionTimeout = time();
+    $connectionTimeout = $connectionTimeout + (10 * 10);
+
+    do {
+        if (($dns == null) || ($dns == '')) {
+            trigger_error("Invalid dns" . $dns, E_USER_ERROR);
+        }
+
+        loghandler(INFO, "Checking connectivity to: " . $dns);
+
+        $connection = ssh2_connect($dns, 22);
+        if (!$connection) {
+            sleep(10);
+        }
+
+    } while ((!$connection) && (time() < $connectionTimeout));
+
+    if (!$connection) {
+        trigger_error("Failed to connect to " . $dns, E_USER_ERROR);
+    }
+}
+
 function & commandutils_getservercredentials($domain,$domainurl,$i_servername) {
 	$default=null;
 
