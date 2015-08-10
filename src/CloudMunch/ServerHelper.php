@@ -19,13 +19,16 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  class ServerHelper{
 
  private $appContext=null;
+ private $cmDataManager = null;
+
   public function __construct($appContext){
-  	$this->appContext=$appContext;
+  	$this->appContext = $appContext;
+  	$this->cmDataManager = new cmDataManager();
  	
  }
  function getServer($servername){
  	
- 	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	
 	$deployArray = json_decode($deployArray);
 	
@@ -35,7 +38,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 
 	foreach ($deployArray as $i => $detailArray) {
 		if (array_key_exists($servername, $detailArray)) {
-			if($detailArray->$servername->assetname == "ElasticBeanStalk"){
+			if(isset($detailArray->$servername->assetname) && $detailArray->$servername->assetname == "ElasticBeanStalk"){
 				$server=new ElasticBeanStalkServer();
 			}else{
 			$server=new Server();
@@ -83,7 +86,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  
  function addServer($server,$docker = false){
  	
-	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	//echo $deployArray;
 	$deployArray = json_decode($deployArray);
 	
@@ -92,7 +95,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	}
 	$dataArray = array (
 	
-			"description" => $server->getDescription(),
+		"description" => $server->getDescription(),
 		"dnsName" => $server->getDNS(),
 		"domainName" => $server->getDomainName(),
 		"emailID" => $server->getEmailId(),
@@ -104,7 +107,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"build" => $server->getBuild(),
 		"appName" =>$server->getAppName(),
 		"deployTempLoc" => $server->getDeployTempLoc(), //need to check
-	"buildLoc" => $server->getBuildLocation(),
+		"buildLoc" => $server->getBuildLocation(),
 		"privateKeyLoc" => $server->getPrivateKeyLoc(),
 		"publicKeyLoc" => $server->getPublicKeyLoc(),
 		"loginUser" => $server->getLoginUser(),
@@ -140,7 +143,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  
  function updateServer($server){
  	$serverName=$server->getServerName();
- 	$deployArray=getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
@@ -191,7 +194,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  }
  
  function deleteServer($serverName){
- 	$deployArray=getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
@@ -211,7 +214,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  }
  
  function checkServerExists($servername){
- 	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	
 	$deployArray = json_decode($deployArray);
 
