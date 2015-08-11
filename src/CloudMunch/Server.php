@@ -38,7 +38,16 @@ class Server{
 	private $instancesize="";
 	private $servername="";
 	private $password="";
+	private $sshport=22;
 	
+	function getSSHPort(){
+		return $this->sshport;
+	}
+
+	function setSSHPort($port){
+		$this->sshport=$port;
+	}
+
 	function getServerName(){
 		return $this->servername;
 	}
