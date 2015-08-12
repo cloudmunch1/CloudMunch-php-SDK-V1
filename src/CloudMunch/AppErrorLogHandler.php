@@ -6,6 +6,7 @@
 
 const DEBUG = 'DEBUG';
 const INFO = 'INFO';
+$__log_level = "DEBUG";
 function isdebugenabled() {
 	return $debugenabled = true;
 }
@@ -57,20 +58,34 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 }
 
 set_error_handler("myErrorHandler");
-
+function set_log_level($log_level){
+	$__log_level = $log_level;
+}
 function loghandler($msgNo, $msg) {
-
 	date_default_timezone_set('UTC');
 	$date = date(DATE_ATOM);
-	switch ($msgNo) {
-		case DEBUG :
-			if (isdebugenabled()) {
+	// BITMASK support 
+	if(strpos(strtolower($__log_level), strtolower($msgNo)) !== false || strtolower($__log_level) == "debug") {
+		// If $__log_level is set as DEBUG - show all logs from the plugin as - DEBUG  
+		if(strtolower($__log_level) == "debug") {
+			$msgNo = "DEBUG";
+		}
+		switch (strtolower($msgNo)) {
+			case "warning" :
+				echo "<b>WARNING</b> [$date] $msg\n";
+				break;
+			case "info" :
+				echo "<b>INFO</b> [$date] $msg\n";
+				break; 
+			case "error" : 
+				echo "<b style='color:red'>ERROR</b> [$date] $msg\n";
+				break;
+			case "debug" : 
 				echo "<b>DEBUG</b> [$date] $msg\n";
-			}
-			break;
-		case INFO :
-			echo "<b>INFO</b> [$date] $msg\n";
-
+				break;	
+		}
+	}else{
+		return false; 
 	}
 }
 ?>
