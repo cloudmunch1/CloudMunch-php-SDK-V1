@@ -72,30 +72,26 @@ abstract class AppAbstract {
 	}
 
 	function setAppContext($appContext) {
-
 		$this->appContext = $appContext;
-
 	}
 
 	function getAppContext() {
-
 		return $this->appContext;
 	}
 	function getCloudmunchServerHelper() {
 		$serverhelper = new ServerHelper($this->appContext);
 		return $serverhelper;
-
 	}
 
 	function getCloudmunchService() {
-
 		$cloudmunchService = new CloudmunchService($this->appContext);
-
 		return $cloudmunchService;
 	}
+	
 	function setParameterObject($params){
 		$this->parameterObject=$params;
 	}
+	
 	function getParameterObject(){
 		return $this->parameterObject;
 	}
@@ -107,8 +103,6 @@ abstract class AppAbstract {
 		$this->getInput();
 	}
 	
-
-	
 	public function getProcessInput(){
 		$cloudservice=null;
 		$CloudServiceHelper =new CloudServiceHelper();
@@ -117,8 +111,6 @@ abstract class AppAbstract {
 		$integrationService=$integrationHelper->getService($this->getParameterObject());
 		$processparameters=array("appInput"=>$this->getParameterObject(), "cloudservice"=>$cloudservice,"integrationdetails"=>$integrationService);
 		return $processparameters;
-		
-		
 	}
 	
 	public function performAppcompletion(){
@@ -129,10 +121,14 @@ abstract class AppAbstract {
 	}
 	
 	public function outputPipelineVariables($variablename,$variable){
-		
 		echo "\n<{\"" . $variablename . "\":\"" . $variable . "\"}>" . PHP_EOL;
-		
 	}
+
+	public function getCommandUtils(){
+		$commandutils = new commandutils();
+		return $commandutils;
+	}
+
 	
 }
 ?>

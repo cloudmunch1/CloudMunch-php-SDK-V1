@@ -19,13 +19,16 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  class ServerHelper{
 
  private $appContext=null;
+ private $cmDataManager = null;
+
   public function __construct($appContext){
-  	$this->appContext=$appContext;
+  	$this->appContext = $appContext;
+  	$this->cmDataManager = new cmDataManager();
  	
  }
  function getServer($servername){
  	
- 	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	
 	$deployArray = json_decode($deployArray);
 	
@@ -35,7 +38,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 
 	foreach ($deployArray as $i => $detailArray) {
 		if (array_key_exists($servername, $detailArray)) {
-			if($detailArray->$servername->assetname == "ElasticBeanStalk"){
+			if(isset($detailArray->$servername->assetname) && $detailArray->$servername->assetname == "ElasticBeanStalk"){
 				$server=new ElasticBeanStalkServer();
 			}else{
 			$server=new Server();
@@ -66,6 +69,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 			$server->setAssetname($detailArray->$servername->assetname);
 			$server->setInstancesize($detailArray->$servername->instancesize);
 			$server->setPassword($detailArray->$servername->password);
+			$server->setSSHPort($detailArray->$servername->sshport);
 			if($server instanceof ElasticBeanStalkServer){
 				$server->setEnvironmentName($detailArray->$servername->environmentName);
 				$server->setBucketName($detailArray->$servername->bucketName);
@@ -83,7 +87,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  
  function addServer($server,$docker = false){
  	
-	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	//echo $deployArray;
 	$deployArray = json_decode($deployArray);
 	
@@ -92,7 +96,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	}
 	$dataArray = array (
 	
-			"description" => $server->getDescription(),
+		"description" => $server->getDescription(),
 		"dnsName" => $server->getDNS(),
 		"domainName" => $server->getDomainName(),
 		"emailID" => $server->getEmailId(),
@@ -104,7 +108,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"build" => $server->getBuild(),
 		"appName" =>$server->getAppName(),
 		"deployTempLoc" => $server->getDeployTempLoc(), //need to check
-	"buildLoc" => $server->getBuildLocation(),
+		"buildLoc" => $server->getBuildLocation(),
 		"privateKeyLoc" => $server->getPrivateKeyLoc(),
 		"publicKeyLoc" => $server->getPublicKeyLoc(),
 		"loginUser" => $server->getLoginUser(),
@@ -117,7 +121,8 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"cmserver" => $server->getCmserver(),
 		"assetname" => $server->getAssetname(),
 		"instancesize" => $server->getInstancesize(),
-		"password" =>$server->getPassword()
+		"password" => $server->getPassword(),
+		"sshport" => $server->getSSHPort()
 	);
 	if($server instanceof ElasticBeanStalkServer){
 		$dataArray[applicationName]=$server->getApplicationName();
@@ -140,7 +145,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  
  function updateServer($server){
  	$serverName=$server->getServerName();
- 	$deployArray=getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
@@ -181,6 +186,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"assetname" => $server->getAssetname(),
 		"instancesize" => $server->getInstancesize(),
 		"password"=>$server->getPassword(),
+		"sshport"=>$server->getSSHPort()
 	);
 
 	$detailArray1[$server->getServerName()] = $dataArray;
@@ -191,7 +197,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  }
  
  function deleteServer($serverName){
- 	$deployArray=getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
@@ -211,7 +217,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  }
  
  function checkServerExists($servername){
- 	$deployArray = getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	
 	$deployArray = json_decode($deployArray);
 
@@ -227,6 +233,36 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	return false;
  }
  
+/**
+* Checks if server is up and running
+*
+* @param 	string dns 		: 	dns of target server 
+* @param    number sshport 	: 	ssh port to be used to check for connection
+* @return 	string Success 	: 	displays an appropriate message
+*			       Failure 	: 	exits with a failure status with an appropriate message
+*/
+function checkConnect($dns,$sshport = 22) {
+	$connectionTimeout = time();
+	$connectionTimeout = $connectionTimeout + (10 * 10);
+
+	do {
+	    if (($dns == null) || ($dns == '')) {
+	        trigger_error("Invalid dns" . $dns, E_USER_ERROR);
+	    }
+
+	    loghandler(INFO, "Checking connectivity to: " . $dns);
+
+	    $connection = ssh2_connect($dns, $sshport);
+	    if (!$connection) {
+	        sleep(10);
+	    }
+
+	} while ((!$connection) && (time() < $connectionTimeout));
+
+	if (!$connection) {
+	    trigger_error("Failed to connect to " . $dns, E_USER_ERROR);
+	}
+}
  
  function checkConnectionToServer($servername){
  	
