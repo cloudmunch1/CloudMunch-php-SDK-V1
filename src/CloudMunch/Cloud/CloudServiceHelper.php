@@ -33,11 +33,7 @@ namespace CloudMunch\Cloud;
 	    	 $azureService=new AzureServiceManagementProvider();
 	    	 $cloudService=$azureService->getCloudService($jsonParams);
 	    	 return $cloudService;
-	    	 case "vchs":
-	    	 require_once 'VMWare/VMWareServiceProvider.php';
-	    	 $vmwareService=new VMWareServiceProvider();
-	    	 $cloudService=$vmwareService->getCloudService($jsonParams);
-	    	 return $cloudService;
+	    	
 	    	 case "VSO":
 		    	 require_once 'VSO/VSOServiceProvider.php';
 		    	 $vsoService=new VSOServiceProvider();

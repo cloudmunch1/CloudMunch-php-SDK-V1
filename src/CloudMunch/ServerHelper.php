@@ -70,6 +70,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 			$server->setInstancesize($detailArray->$servername->instancesize);
 			$server->setPassword($detailArray->$servername->password);
 			$server->setSSHPort($detailArray->$servername->sshport);
+			$server->setTier($detailArray->$servername->tier);
 			if($server instanceof ElasticBeanStalkServer){
 				$server->setEnvironmentName($detailArray->$servername->environmentName);
 				$server->setBucketName($detailArray->$servername->bucketName);
@@ -122,7 +123,8 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"assetname" => $server->getAssetname(),
 		"instancesize" => $server->getInstancesize(),
 		"password" => $server->getPassword(),
-		"sshport" => $server->getSSHPort()
+		"sshport" => $server->getSSHPort(),
+			"tier"=>$server->getTier()
 	);
 	if($server instanceof ElasticBeanStalkServer){
 		$dataArray[applicationName]=$server->getApplicationName();
@@ -186,7 +188,8 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		"assetname" => $server->getAssetname(),
 		"instancesize" => $server->getInstancesize(),
 		"password"=>$server->getPassword(),
-		"sshport"=>$server->getSSHPort()
+		"sshport"=>$server->getSSHPort(),
+ 			"tier"=>$server->getTier()
 	);
 
 	$detailArray1[$server->getServerName()] = $dataArray;

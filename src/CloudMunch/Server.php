@@ -39,6 +39,15 @@ class Server{
 	private $servername="";
 	private $password="";
 	private $sshport=22;
+	private $tier="";
+	
+	function getTier(){
+		return $this->tier;
+	}
+	
+	function setTier($tier){
+		$this->tier=$tier;
+	}
 	
 	function getSSHPort(){
 		return $this->sshport;
