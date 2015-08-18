@@ -42,7 +42,7 @@ abstract class AppAbstract {
 
 		$jsonParams = json_decode($jsonParameters);
 		foreach ($jsonParams as $key => $value) {
-			if (($key !== "cloudproviders") && ($key !== "password")) {
+			if (($key !== "cloudproviders") && ($key !== "password") && ($key !== "inputparameters")) {
 				loghandler(DEBUG, $key . ": " . $value);
 			}
 		}

@@ -44,7 +44,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 		case E_STRICT :
 		case E_NOTICE :
 		case E_USER_NOTICE :
-			echo "<b>NOTICE</b> [$date] $errstr $errfile $errline\n";
+			//echo "<b>NOTICE</b> [$date] $errstr $errfile $errline\n";
 			break;
 
 		default :
