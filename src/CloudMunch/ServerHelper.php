@@ -141,7 +141,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	$detailArray[$server->getServerName()] = $dataArray;
 	array_push($deployArray, $detailArray);
 	
-	updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
+	$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
  }
  
  
@@ -195,7 +195,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	$detailArray1[$server->getServerName()] = $dataArray;
 	array_push($deployArray, $detailArray1);
 	
-	updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
+	$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
 		}
  }
  
@@ -213,7 +213,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 			}
 		}
 		$deployArray = array_values($deployArray);
-		updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(),$deployArray);
+		$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(),$deployArray);
 		
 	}
  	
