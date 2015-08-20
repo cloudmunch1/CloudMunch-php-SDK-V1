@@ -5,6 +5,8 @@ namespace CloudMunch;
 require_once ("AppErrorLogHandler.php");
 use CloudMunch\Cloud\CloudServiceHelper;
 use CloudMunch\Integrations\IntegrationHelper;
+use CloudMunch\sshConnection;
+use CloudMunch\commandutils;
 use DateTime;
 
 /**
@@ -127,6 +129,11 @@ abstract class AppAbstract {
 	public function getCommandUtils(){
 		$commandutils = new commandutils();
 		return $commandutils;
+	}
+	
+	public function getSSHConnection(){
+		$sshConnection = new sshConnection();
+		return $sshConnection;
 	}
 
 	
