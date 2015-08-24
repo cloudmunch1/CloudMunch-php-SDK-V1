@@ -1,5 +1,7 @@
 <?php
 namespace CloudMunch;
+
+use Exception;
 /*
  * Created on 22-Mar-2012
  *
@@ -9,7 +11,7 @@ namespace CloudMunch;
  class sshConnection{
  	private $connection=null;
  	private $userConnection=null;
- function getRootConnection($dnsName,$connectionTimeOut,$serverName){
+ function getRootConnection($dnsName,$connectionTimeOut,$serverName,$sshport = 22){
  	    $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		$privateKey='/var/cloudbox/data/rootKeyLoc/privateKey';
@@ -19,7 +21,7 @@ namespace CloudMunch;
 			throw new Exception("Invalid dns".$dnsName);	
 			}
 		//writeStatusLog($serverName,"connecting to ".$dnsName);	
-		$this->connection = ssh2_connect($dnsName, 22);
+		$this->connection = ssh2_connect($dnsName, $sshport);
 		if (!$this->connection) {
 			sleep(10);
 		}
@@ -48,7 +50,7 @@ namespace CloudMunch;
  	
  }
  
- function getUserConnection($dnsName,$connectionTimeOut,$serverName,$requestid){
+ function getUserConnection($dnsName,$connectionTimeOut,$serverName,$requestid,$sshport = 22){
   $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		$privateKey='/var/cloudbox/data/rootKeyLoc/privateKey';
@@ -62,7 +64,7 @@ namespace CloudMunch;
 			throw new Exception("Invalid dns".$dnsName);	
 			}
 		
-		$this->userConnection = ssh2_connect($dnsName, 22);
+		$this->userConnection = ssh2_connect($dnsName, $sshport);
 		if (!$this->userConnection) {
 			sleep(10);
 		}
@@ -100,7 +102,7 @@ namespace CloudMunch;
 
 
  
- function getUserConnectionwithKey($dnsName,$connectionTimeOut,$serverName,$privateKey,$publicKey,$password,$userName){
+ function getUserConnectionwithKey($dnsName,$connectionTimeOut,$serverName,$privateKey,$publicKey,$password,$userName,$sshport = 22){
  	 $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		
@@ -116,7 +118,7 @@ namespace CloudMunch;
 			throw new Exception("/nInvalid DNS".$dnsName);	
 			}
 		
-		$this->userConnection = ssh2_connect($dnsName, 22);
+		$this->userConnection = ssh2_connect($dnsName, $sshport);
 		if (!$this->userConnection) {
 			sleep(10);
 		}
