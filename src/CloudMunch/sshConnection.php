@@ -11,7 +11,7 @@ use Exception;
  class sshConnection{
  	private $connection=null;
  	private $userConnection=null;
- function getRootConnection($dnsName,$connectionTimeOut,$serverName,$sshport){
+ function getRootConnection($dnsName,$connectionTimeOut,$serverName,$sshport = 22){
  	    $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		$privateKey='/var/cloudbox/data/rootKeyLoc/privateKey';
@@ -50,7 +50,7 @@ use Exception;
  	
  }
  
- function getUserConnection($dnsName,$connectionTimeOut,$serverName,$requestid,$sshport){
+ function getUserConnection($dnsName,$connectionTimeOut,$serverName,$requestid,$sshport = 22){
   $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		$privateKey='/var/cloudbox/data/rootKeyLoc/privateKey';
@@ -102,7 +102,7 @@ use Exception;
 
 
  
- function getUserConnectionwithKey($dnsName,$connectionTimeOut,$serverName,$privateKey,$publicKey,$password,$userName,$sshport){
+ function getUserConnectionwithKey($dnsName,$connectionTimeOut,$serverName,$privateKey,$publicKey,$password,$userName,$sshport = 22){
  	 $currentTime=time();
 		$connectionTimeout=$currentTime+($connectionTimeOut*60);
 		
