@@ -1,5 +1,12 @@
 <?php
-
+/**
+ *  (c) CloudMunch Inc.
+ *  All Rights Reserved
+ *  Un-authorized copying of this file, via any medium is strictly prohibited
+ *  Proprietary and confidential
+ *
+ *  Rosmi Chandy rosmi@cloudmunch.com
+ */
 namespace CloudMunch;
 use CloudMunch\cmDataManager;
 //require_once ("cmDataManager.php");
@@ -21,7 +28,12 @@ class CloudmunchService {
 		$this->appContext = $appContext;
 		$this->cmDataManager = new cmDataManager();
 	}
-
+/**
+ * This method is to invoke notification on cloudmunch.
+ * @param  $message Notification message.
+ * @param  $context Context for which user is notified.
+ * @param  $id Name of the object.
+ */
 	public function notifyUsers($message, $context, $id) {
 		$dataarray = array (
 
@@ -33,10 +45,19 @@ class CloudmunchService {
 		return $this->cmDataManager->notifyUsersInCloudmunch($this->appContext->getMasterURL(), $message, $dataarray, $this->appContext->getDomainName());
 	}
 	
+	/**
+	 * Updates data in cloudmunch for the context.
+	 * @param  $context Context for which data is to be updated.
+	 * @param  $dataArray Array of data to be updated.
+	 */
 	public function updateDataContext( $context, $dataArray){
 		return $this->cmDataManager->updateContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray);
 	}
 	
+	/**
+	 * Returns context object.
+	 * @param  $context Context for which data is to be retreived.
+	 */
 	public function getDataFromContext($context){
 		return $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
 		
@@ -46,7 +67,7 @@ class CloudmunchService {
 		return $this->cmDataManager->updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
 	}
 
-	/*
+	/**
 	* This function accepts data in array format and converts to url string
 	*
 	* Example : 
@@ -62,8 +83,8 @@ class CloudmunchService {
 	*		'count' => '*',
 	*		'filter' => "{\"fix_versions\":\"10\"}"
 	*	);
-	* 
-	*/
+	* @param $context Data to be passed.
+	*/ 
 	public function getDataFromCustomContext($context) {
 		return $this->cmDataManager->getDataForCustomContext($this->appContext->getMasterURL(), $context);
 	}

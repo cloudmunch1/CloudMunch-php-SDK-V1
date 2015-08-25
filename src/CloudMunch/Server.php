@@ -1,11 +1,14 @@
 <?php
-namespace CloudMunch;
-/*
- * Created on 04-Feb-2015
+/**
+ *  (c) CloudMunch Inc.
+ *  All Rights Reserved
+ *  Un-authorized copying of this file, via any medium is strictly prohibited
+ *  Proprietary and confidential
  *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
+ *  Rosmi Chandy rosmi@cloudmunch.com
  */
+namespace CloudMunch;
+
 /**
  * This class is to create server object ,that holds the data about a server.
  */

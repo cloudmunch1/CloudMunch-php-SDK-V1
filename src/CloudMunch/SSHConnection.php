@@ -8,7 +8,7 @@ use Exception;
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
- class sshConnection{
+ class SSHConnection{
  	private $connection=null;
  	private $userConnection=null;
  function getRootConnection($dnsName,$connectionTimeOut,$serverName,$sshport = 22){

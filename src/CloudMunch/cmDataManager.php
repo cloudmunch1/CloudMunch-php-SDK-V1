@@ -1,15 +1,18 @@
 <?php
+/**
+ *  (c) CloudMunch Inc.
+ *  All Rights Reserved
+ *  Un-authorized copying of this file, via any medium is strictly prohibited
+ *  Proprietary and confidential
+ *
+ *  Rosmi Chandy rosmi@cloudmunch.com
+ */
 namespace CloudMunch;
 require_once ("AppErrorLogHandler.php");
 
-/*
- * Created on 19-Sep-2014
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
+
  /**
-  * This class  connetcs to cloudmunch to update /retrieve data
+  * This class  connects to cloudmunch to update /retrieve data
   */
 
 class cmDataManager{

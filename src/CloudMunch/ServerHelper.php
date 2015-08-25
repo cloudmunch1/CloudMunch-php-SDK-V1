@@ -1,16 +1,22 @@
 <?php
+/**
+ *  (c) CloudMunch Inc.
+ *  All Rights Reserved
+ *  Un-authorized copying of this file, via any medium is strictly prohibited
+ *  Proprietary and confidential
+ *
+ *  Rosmi Chandy rosmi@cloudmunch.com
+ */
 namespace CloudMunch;
 
-require_once ("cmDataManager.php");
+
+use CloudMunch\cmDataManager;
+use CloudMunch\SSHConnection;
+use CloudMunch\Server;
+
 require_once ("AppErrorLogHandler.php");
-require_once ("Server.php");
 require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
-/*
- * Created on 04-Feb-2015
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
+
  
  /**
   * This is a helper class to perform actions on server like providing methods to add ,read and update 
@@ -26,6 +32,12 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
   	$this->cmDataManager = new cmDataManager();
  	
  }
+ 
+ /**
+  * This method retreives the details of server from cloudmunch.
+  * @param  $servername Name of the server as registered in cloudmunch.
+  * @return \CloudMunch\Server
+  */
  function getServer($servername){
  	
  	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
@@ -85,7 +97,11 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	trigger_error("Server does not exist", E_USER_ERROR);
 	
  }
- 
+  /**
+   * This method can be used to add or register a server to cloudmunch data .
+   * @param \CloudMunch\Server $server
+   * @param string $docker
+   */
  function addServer($server,$docker = false){
  	
 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
@@ -144,14 +160,17 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 	$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
  }
  
- 
+ /**
+  * This method is used to update server data.
+  * @param \CloudMunch\Server $server
+  */
  function updateServer($server){
  	$serverName=$server->getServerName();
  	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
-		//sysout("ERROR", 'Not able to read the server details');
+		
 	} else {
 		foreach ($deployArray as $i => $detailArray) {
 			if (array_key_exists($serverName, $detailArray)) {
@@ -199,12 +218,16 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
 		}
  }
  
+ /**
+  * This method is to delete server from cloudmunch.
+  * @param  $serverName Name of server.
+  */
  function deleteServer($serverName){
  	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 		$deployArray=json_decode($deployArray);
 		if ($deployArray == null) {
 			loghandler(INFO,'Not able to read the server details');
-		//sysout("ERROR", 'Not able to read the server details');
+		
 	} else {
 		foreach ($deployArray as $i => $detailArray) {
 			if (array_key_exists($serverName, $detailArray)) {
@@ -219,6 +242,11 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  	
  }
  
+ /**
+  * This method checks if server exists or is registered in cloudmunch data.
+  * @param  $servername Name of server.
+  * @return boolean
+  */
  function checkServerExists($servername){
  	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
 	
@@ -274,6 +302,13 @@ function checkConnect($dns,$sshport = 22) {
  function getConnectionToServer($servername){
  	
  	
+ }
+ /**
+  * This method returns SSHConnection helper
+  * @return \CloudMunch\sshConnection
+  */
+ function getSSHConnectionHelper(){
+ 	return new SSHConnection();
  }
  }
 ?>
