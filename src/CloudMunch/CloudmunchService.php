@@ -30,9 +30,9 @@ class CloudmunchService {
 	}
 /**
  * This method is to invoke notification on cloudmunch.
- * @param  $message Notification message.
- * @param  $context Context for which user is notified.
- * @param  $id Name of the object.
+ * @param  string $message : Notification message.
+ * @param  string $context : Context for which user is notified.
+ * @param  string $id : Name of the object.
  */
 	public function notifyUsers($message, $context, $id) {
 		$dataarray = array (
@@ -47,8 +47,8 @@ class CloudmunchService {
 	
 	/**
 	 * Updates data in cloudmunch for the context.
-	 * @param  $context Context for which data is to be updated.
-	 * @param  $dataArray Array of data to be updated.
+	 * @param  string $context : Context for which data is to be updated.
+	 * @param  array $dataArray : Array of data to be updated.
 	 */
 	public function updateDataContext( $context, $dataArray){
 		return $this->cmDataManager->updateContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray);
@@ -56,13 +56,19 @@ class CloudmunchService {
 	
 	/**
 	 * Returns context object.
-	 * @param  $context Context for which data is to be retreived.
+	 * @param  string $context : Context for which data is to be retreived.
 	 */
 	public function getDataFromContext($context){
 		return $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName());
 		
 	}
 	
+	/**
+	 * Method to update custom context.
+	 * @param string $context : custom context name.
+	 * @param array $dataArray
+	 * @param string $id
+	 */
 	public function updateCustomContext($context, $dataArray,$id){
 		return $this->cmDataManager->updateCustomContext($this->appContext->getMasterURL(), $context, $this->appContext->getDomainName(), $dataArray,$id);
 	}

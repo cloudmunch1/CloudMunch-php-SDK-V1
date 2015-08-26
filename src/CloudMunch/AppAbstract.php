@@ -9,7 +9,7 @@
   */
 namespace CloudMunch;
 require_once ("AppErrorLogHandler.php");
-use CloudMunch\Cloud\CloudServiceHelper;
+
 use CloudMunch\Integrations\IntegrationHelper;
 use DateTime;
 
@@ -21,14 +21,30 @@ use DateTime;
  * create app context object and retreive service objects
  */
 abstract class AppAbstract {
-	
+	/**
+	 * AppContext 
+	 */
 	private $appContext = null; 
+	
+	/**
+	 * String containing input parameters.
+	 */
 	private $parameterObject=null;
+	
+	/**
+	 * Strat time of the plugin execution.
+	 */
 	private $stime=null;
+	
+	/**
+	 * This is an abstract method to be implemented by every plugin.
+	 * @param array $processparameters This array contains the two entries , appInput and integrationdetails
+	 *	
+	 */
     abstract function process($processparameters);
     
 	 /**
-	  * This method read and processcthe input parameters
+	  * This method read and process the input parameters.
 	  */ 
 	function getInput() {
 		$argArray = $_SERVER['argv'];
@@ -83,13 +99,16 @@ abstract class AppAbstract {
 
 	/**
 	 * This method sets the plugin context object that contains all environment variables.
+	 * @param AppContext appContext
+	 * 
 	 */
 	function setAppContext($appContext) {
 		$this->appContext = $appContext;
 	}
 	
     /**
-     *This method returns the  plugin context object that contains all environment variables.
+     * This method returns the  plugin context object that contains all environment variables.
+     * @return AppContext appContext
      * List of environment variables that can be retreived be retreived from App context are,
      * 1.MasterURL: This is the cloudmunch service URL.
      * 2.cloudproviders: This is a json object that has reference to the integrations.
@@ -104,6 +123,7 @@ abstract class AppAbstract {
 	/**
 	 * This method gives reference to ServerHelper,this helper class has all the methods to get/set data on 
 	 * servers registered with cloudmunch.
+	 * @return ServerHelper serverhelper
 	 */
 	function getCloudmunchServerHelper() {
 		$serverhelper = new ServerHelper($this->appContext);
@@ -112,6 +132,7 @@ abstract class AppAbstract {
 
 	/**
 	 * This method returns reference to CloudmunchService,this helper class has all the methods to get/set data to cloudmunch service.
+	 * @return CloudmunchService
 	 */
 	function getCloudmunchService() {
 		$cloudmunchService = new CloudmunchService($this->appContext);
@@ -120,6 +141,7 @@ abstract class AppAbstract {
 	
 	/**
 	 * Set parameter object.
+	 * @param string params : String in json format ,containing plugin input.
 	 */
 	function setParameterObject($params){
 		$this->parameterObject=$params;
@@ -127,6 +149,7 @@ abstract class AppAbstract {
 	
 	/**
 	 * Get parameter object.
+	 * @return string parameterObject : String in json format ,containing plugin input.
 	 */
 	function getParameterObject(){
 		return $this->parameterObject;
@@ -145,12 +168,11 @@ abstract class AppAbstract {
 	
 	/**
 	 * This is a lifecycle method to process input.
-	 * @return An array containing pluginiput parameters and integration details if any.
+	 * @return array processparameters : Array containing pluginiput parameters and integration details if any.
 	 */
 	public function getProcessInput(){
 		$cloudservice=null;
-		$CloudServiceHelper =new CloudServiceHelper();
-		$cloudservice= $CloudServiceHelper->getService($this->getParameterObject());
+		
 		$integrationHelper=new IntegrationHelper();
 		$integrationService=$integrationHelper->getService($this->getParameterObject());
 		$processparameters=array("appInput"=>$this->getParameterObject(), "cloudservice"=>$cloudservice,"integrationdetails"=>$integrationService);
@@ -169,8 +191,8 @@ abstract class AppAbstract {
 	
 	/**
 	 * This method outputs variables from the plugin
-	 * @param variablename: Name of the variable to be output.
-	 * @param variable : Value of the variable.
+	 * @param string variablename : Name of the variable to be output.
+	 * @param string variable : Value of the variable.
 	 */
 	public function outputPipelineVariables($variablename,$variable){
 		echo "\n<{\"" . $variablename . "\":\"" . $variable . "\"}>" . PHP_EOL;

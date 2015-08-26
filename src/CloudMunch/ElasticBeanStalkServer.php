@@ -1,5 +1,5 @@
 <?php
-namespace Cloudmunch\Cloud\AWS;
+namespace CloudMunch;
 //require_once "Server.php";
 use CloudMunch\Server;
 /*

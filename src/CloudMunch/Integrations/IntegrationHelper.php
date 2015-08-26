@@ -1,13 +1,27 @@
 <?php
-namespace CloudMunch\Integrations;
-/*
- * Created on 09-Feb-2015
+/**
+ *  (c) CloudMunch Inc.
+ *  All Rights Reserved
+ *  Un-authorized copying of this file, via any medium is strictly prohibited
+ *  Proprietary and confidential
  *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
+ *  Rosmi Chandy rosmi@cloudmunch.com 09-Feb-2015
  */
- 
+namespace CloudMunch\Integrations;
+
+/**
+ * This helper file process the cloudproviders input to get the selected provider details.
+ * @author rosmi
+ *
+ */
   class IntegrationHelper{
+  	
+  	/**
+  	 * This method process plugin input to retreive the provider details.
+  	 * @param  $jsonParams Input parameters to the plugin in json format.
+  	 * @return array $integrationdetails Array containing credentials to connect to the provider.
+  	 *         
+  	 */
  	
  	function getService($jsonParams){
  		

@@ -13,9 +13,10 @@ namespace CloudMunch;
 use CloudMunch\cmDataManager;
 use CloudMunch\SSHConnection;
 use CloudMunch\Server;
+use CloudMunch\ElasticBeanStalkServer;
 
 require_once ("AppErrorLogHandler.php");
-require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
+
 
  
  /**
@@ -35,7 +36,7 @@ require_once ("Cloud/AWS/ElasticBeanStalkServer.php");
  
  /**
   * This method retreives the details of server from cloudmunch.
-  * @param  $servername Name of the server as registered in cloudmunch.
+  * @param  string $servername Name of the server as registered in cloudmunch.
   * @return \CloudMunch\Server
   */
  function getServer($servername){
