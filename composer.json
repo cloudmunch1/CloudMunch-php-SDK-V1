@@ -1,5 +1,5 @@
 {
-    "name": "cloudmunch/php-sdk-v1",
+    "name": "syamk/CloudMunch-php-SDK-V1",
     "description": "CloudMunch SDK for PHP",
     "keywords": ["CloudMunch", "sdk"],
     "type": "library",
