@@ -126,8 +126,8 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
 	global $curl_verbose;
 	$curl_verbose = 0;
-	//var_dump($serverArray);
-	$data = "data=" . json_encode($serverArray);
+	
+	$data = "data=" . json_encode($serverArray["data"]);
 	$url = $masterurl . "/cbdata.php?action=updatecustomcontext&customcontext=" . $context . "&username=CI&mode=update&domain=" . $domain."&id=".$id;
 	//$url=urlencode($url);
 	echo "\nurl is:" . $url.PHP_EOL;
