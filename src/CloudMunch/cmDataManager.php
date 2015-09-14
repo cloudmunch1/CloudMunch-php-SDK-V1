@@ -16,6 +16,7 @@ require_once ("AppErrorLogHandler.php");
   */
 
 class cmDataManager{
+
 function getDataForContext($servername, $context, $domain) {
 	$url = $servername . "/cbdata.php?context=" . $context . "&username=CI&domain=" . $domain;
 	//echo "\nurl is:" . $url.PHP_EOL;
@@ -83,7 +84,7 @@ function updateContext($masterurl, $context, $domain, $serverArray) {
 	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
-	$data = "data=" . json_encode($serverArray);
+	$data = "data=" . json_encode($serverArray["data"]);
 	$url = $masterurl . "/cbdata.php?context=" . $context . "&username=CI&mode=update&domain=" . $domain;
 	//$url=urlencode($url);
 	//echo "\nurl is:" . $url.PHP_EOL;
@@ -111,14 +112,14 @@ function updateContext($masterurl, $context, $domain, $serverArray) {
 	curl_setopt_array($post, $options);
 	$result = curl_exec($post);
 	$response_code = curl_getinfo($post, CURLINFO_HTTP_CODE);
-if(($result === FALSE) && ($response_code != 100)) {
-	loghandler(INFO,"result:" . $response_code);
-	trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
-}else{
-	loghandler(INFO,"Updated:" . $result);
-	loghandler(INFO,"result:" . $result);
-	//echo "\nresult:" . $result.PHP_EOL;
-}
+	if(($result === FALSE) && ($response_code != 100)) {
+		loghandler(INFO,"result:" . $response_code);
+		trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
+	}else{
+		loghandler(INFO,"Updated:" . $result);
+		loghandler(INFO,"result:" . $result);
+		//echo "\nresult:" . $result.PHP_EOL;
+	}
 
 }
 function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
@@ -238,6 +239,7 @@ function updateServerDetailsList($dnsName = "", $instanceId = "", $amiName = "",
 
 	$deployUtil->writeToDeployFile($deployArray);
 }
+
 function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
 	// global $curl_verbose;
@@ -279,13 +281,14 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	curl_setopt_array($post, $options);
 	$result = curl_exec($post);
 	$response_code = curl_getinfo($post, CURLINFO_HTTP_CODE);
-if($result === FALSE) {
-	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
-}else{
-	loghandler(INFO,"result:" . $result);
-	loghandler(INFO, "Notification send");
-	//echo "\nresult:" . $result.PHP_EOL;
+	if($result === FALSE) {
+		trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
+	}else{
+		loghandler(INFO,"result:" . $result);
+		loghandler(INFO, "Notification send");
+		//echo "\nresult:" . $result.PHP_EOL;
+	}
 }
-}
+
 }
 ?>

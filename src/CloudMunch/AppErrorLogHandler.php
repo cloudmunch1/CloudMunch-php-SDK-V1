@@ -14,6 +14,7 @@
 const DEBUG = 'DEBUG';
 const INFO = 'INFO';
 $__log_level = "DEBUG";
+
 function myErrorHandler($errno, $errstr, $errfile, $errline) {
 	if (!(error_reporting() & $errno)) {
 		// This error code is not included in error_reporting
