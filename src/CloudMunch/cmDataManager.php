@@ -80,7 +80,7 @@ function updateContext($masterurl, $context, $domain, $serverArray) {
 	// global $curl_verbose;
 	$curl_verbose = 0;
 	//var_dump($serverArray);
-	$data = "data=" . json_encode($serverArray);
+	$data = "data=" . json_encode($serverArray["data"]);
 	$url = $masterurl . "/cbdata.php?context=" . $context . "&username=CI&mode=update&domain=" . $domain;
 	//$url=urlencode($url);
 	//echo "\nurl is:" . $url.PHP_EOL;
