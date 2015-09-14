@@ -13,15 +13,13 @@
 
 const DEBUG = 'DEBUG';
 const INFO = 'INFO';
-function isdebugenabled() {
-	return $debugenabled = true;
-}
+$__log_level = "DEBUG";
+
 function myErrorHandler($errno, $errstr, $errfile, $errline) {
 	if (!(error_reporting() & $errno)) {
 		// This error code is not included in error_reporting
 		return;
 	}
-
 	date_default_timezone_set('UTC');
 	$date = date(DATE_ATOM);
 	switch ($errno) {
@@ -38,7 +36,6 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 			exit (1);
 			break;
 		case E_CORE_WARNING :
-
 		case E_WARNING :
 		case E_USER_WARNING :
 			if (strpos($errstr, 'ssh2_connect():') !== false) {
@@ -51,38 +48,58 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 		case E_STRICT :
 		case E_NOTICE :
 		case E_USER_NOTICE :
-			//echo "<b>NOTICE</b> [$date] $errstr $errfile $errline\n";
+			echo "<b>NOTICE</b> [$date] $errstr $errfile $errline\n";
 			break;
-
 		default :
 			echo "Unknown error type: [$date] $errstr\n";
 			break;
 	}
-
 	/* Don't execute PHP internal error handler */
 	return true;
 }
-
 set_error_handler("myErrorHandler");
 
 /**
  * 
- * @param string  $msgNo : DEBUG or INFO.
+ * @param string  $log_level : loglevel to set for the app 
+ */
+
+function set_log_level($log_level){
+	$__log_level = $log_level;
+}
+
+
+/**
+ * 
+ * @param string  $msgNo : debug/warning/info/error
  * @param string $msg : message to be logged.
  */
-function loghandler($msgNo, $msg) {
 
+function loghandler($msgNo, $msg) {
 	date_default_timezone_set('UTC');
 	$date = date(DATE_ATOM);
-	switch ($msgNo) {
-		case DEBUG :
-			if (isdebugenabled()) {
+	// BITMASK support 
+	if(strpos(strtolower($__log_level), strtolower($msgNo)) !== false || strtolower($__log_level) == "debug") {
+		// If $__log_level is set as DEBUG - show all logs from the plugin as - DEBUG  
+		if(strtolower($__log_level) == "debug") {
+			$msgNo = "DEBUG";
+		}
+		switch (strtolower($msgNo)) {
+			case "warning" :
+				echo "<b>WARNING</b> [$date] $msg\n";
+				break;
+			case "info" :
+				echo "<b>INFO</b> [$date] $msg\n";
+				break; 
+			case "error" : 
+				echo "<b style='color:red'>ERROR</b> [$date] $msg\n";
+				break;
+			case "debug" : 
 				echo "<b>DEBUG</b> [$date] $msg\n";
-			}
-			break;
-		case INFO :
-			echo "<b>INFO</b> [$date] $msg\n";
-
+				break;	
+		}
+	}else{
+		return false; 
 	}
 }
 ?>
