@@ -37,6 +37,11 @@ abstract class AppAbstract {
 	private $stime=null;
 	
 	/**
+	 * A boolean to indicate if it is new platform
+	 */
+	private $newVer=false;
+	
+	/**
 	 * This is an abstract method to be implemented by every plugin.
 	 * @param array $processparameters This array contains the two entries , appInput and integrationdetails
 	 *	
@@ -61,11 +66,65 @@ abstract class AppAbstract {
 						continue;
 
 					}
+				case "-variables":
+				{
+				  $variableParams=$argArray[$i +1];
+				 
+				  $this->newVer=true;
+				}
+			
+				case "-integrations":{
+					  $integrations=$argArray[$i +1];
+					 
+					  $this->newVer=true;
+				}
 
 			}
 
 		}
+        if($this->newVer){
+        	$jsonParams = json_decode($jsonParameters);
+        	$varParams = json_decode($variableParams);
+        	$integrations=json_decode($integrations);
+        	$appContext = new AppContext();
 
+    		$arg10 = '{master_url}';
+    		$masterurl = $varParams-> $arg10;
+    		$appContext->setMasterURL($masterurl);
+
+    		
+    		$appContext->setIntegrations($integrations);
+    		$arg2 = '{domain}';
+    		$domainName = $varParams-> $arg2;
+    		$appContext->setDomainName($domainName);
+
+    		$arg6 = '{application}';
+    		$projectId = $varParams-> $arg6;
+    		$appContext->setProject($projectId);
+
+    		$arg6 = '{ci_job_name}';
+    		$jobname = $varParams-> $arg6;
+    		$appContext->setJob($jobname);
+    		
+    		$arg="{workspace}";
+    		$workspace = $varParams-> $arg;
+    		$appContext->setWokSpaceLocation($workspace);
+    		
+    		$arg="stepdetails";
+    		$stepDetails = $varParams-> $arg;
+    		$stepDetails=json_decode($stepDetails);
+    		$appContext->setStepID($stepDetails->id);
+    		
+    		$arg="{archive_location}";
+    		$archiveloc = $varParams-> $arg;
+    		$appContext->setArchiveLocation($archiveloc);
+    		
+    		$arg="{targetserver}";
+    		$targetServer = $varParams-> $arg;
+    		$appContext->setTargetServer($targetServer);
+    		
+    		$this->setAppContext($appContext);
+        }else{
 		$jsonParams = json_decode($jsonParameters);
 		foreach ($jsonParams as $key => $value) {
 			if (($key !== "cloudproviders") && ($key !== "password") && ($key !== "inputparameters")) {
@@ -94,6 +153,7 @@ abstract class AppAbstract {
 		$jobname = $jsonParams-> $arg6;
 		$appContext->setJob($jobname);
 		$this->setAppContext($appContext);
+        }
 		return $this->setParameterObject($jsonParams);
 	}
 
@@ -174,7 +234,11 @@ abstract class AppAbstract {
 		$cloudservice=null;
 		
 		$integrationHelper=new IntegrationHelper();
+		if($this->newVer){
+			$integrationService=$integrationHelper->getIntegration($this->getParameterObject(),$this->appContext->getIntegrations());
+		}else{
 		$integrationService=$integrationHelper->getService($this->getParameterObject());
+		}
 		$processparameters=array("appInput"=>$this->getParameterObject(), "cloudservice"=>$cloudservice,"integrationdetails"=>$integrationService);
 		return $processparameters;
 	}
@@ -195,7 +259,24 @@ abstract class AppAbstract {
 	 * @param string variable : Value of the variable.
 	 */
 	public function outputPipelineVariables($variablename,$variable){
+		if($this->newVer){
+			$fileloc=$this->appContext->getWorkSpaceLocation()."/".$this->appContext->getStepID().".out";
+			$varlist=file_get_contents($fileloc);
+			if(($varlist ==null) ||(strlen($varlist)==0)){
+				$varlist=array($variablename => $variable);	
+				$varlist=json_encode($varlist);
+				file_put_contents($fileloc, $varlist);
+			}else{
+				$varlist=json_decode($varlist);
+				$varlist->$variablename=$variable;
+				$varlist=json_encode($varlist);
+				file_put_contents($fileloc, $varlist);
+				
+			}
+		}else{
 		echo "\n<{\"" . $variablename . "\":\"" . $variable . "\"}>" . PHP_EOL;
+		}
+		
 	}
 
 	

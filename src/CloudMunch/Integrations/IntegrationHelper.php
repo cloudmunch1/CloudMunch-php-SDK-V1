@@ -51,5 +51,37 @@ namespace CloudMunch\Integrations;
 	    }
  		
  	}
+ 	/**
+ 	 * This method process plugin input to retreive the integration details.
+ 	 * @param Array $jsonParams Input parameters to plugin
+ 	 * @param Array $integrations Integration details
+ 	 * @return Array $integrationdetails Connection details to integration.
+ 	 */
+ 	function getIntegration($jsonParams,$integrations){
+ 		
+ 		$arg1 = 'providername';
+ 		$provname = $jsonParams-> $arg1;
+ 		loghandler(DEBUG, "Provider Name: ".$provname);
+ 		
+ 		
+ 		if(($provname != null) && (strlen(trim($provname))>0)){
+ 			$tpe="type";
+ 			$conf="configuration";
+ 			$type=$integrations->$provname->$tpe;
+ 			loghandler(DEBUG, "Type: ".$type);
+ 			$regfields=$integrations->$provname->$conf;
+ 			$integrationdetails=array();
+ 			foreach ($regfields as $key=>$value){
+ 				
+ 				$integrationdetails[$key]=$value;
+ 			
+ 			}
+ 			return $integrationdetails;
+ 		
+ 		}else{
+ 			return null;
+ 		}
+ 		
+ 	}
  }
 ?>
