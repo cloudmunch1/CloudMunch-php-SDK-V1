@@ -29,6 +29,8 @@ class AppContext {
 	private $stepid = "";
 	private $targetServer="";
 	private $integrations="";
+	private $reportsLocation="";
+	private $runnumber="";
 	
 	/**
 	 * 
@@ -190,5 +192,38 @@ class AppContext {
 	function setJob($job) {
 		$this->job = $job;
 	}
+	
+	/**
+	 * 
+	 * @return reportsLocation
+	 */
+	function getReportsLocation(){
+		return $this->reportsLocation;
+	}
+	
+	/**
+	 * 
+	 * @param reportsLocation
+	 */
+	function setReportsLocation($reportLoc){
+		$this->reportsLocation=$reportLoc;
+	}
+	
+	/**
+	 * 
+	 * @return run number
+	 */
+	function getRunNumber(){
+		return $this->runnumber;
+	}
+	
+	/**
+	 * 
+	 * @param  build number
+	 */
+	function setRunNumber($runno){
+		$this->runnumber=$runno;
+	}
+	
 }
 ?>

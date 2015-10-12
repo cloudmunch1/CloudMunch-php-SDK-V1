@@ -114,6 +114,7 @@ abstract class AppAbstract {
     		$stepDetails = $varParams-> $arg;
     		$stepDetails=json_decode($stepDetails);
     		$appContext->setStepID($stepDetails->id);
+    		$appContext->setReportsLocation($stepDetails->reports_location);
     		
     		$arg="{archive_location}";
     		$archiveloc = $varParams-> $arg;
@@ -122,6 +123,10 @@ abstract class AppAbstract {
     		$arg="{targetserver}";
     		$targetServer = $varParams-> $arg;
     		$appContext->setTargetServer($targetServer);
+    		
+    		$arg="{run}";
+    		$run = $varParams-> $arg;
+    		$appContext->setRunNumber($run);
     		
     		$this->setAppContext($appContext);
         }else{
