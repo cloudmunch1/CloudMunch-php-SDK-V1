@@ -38,13 +38,18 @@ class AssetHelper{
 	/**
 	 * 
 	 * @param String  $assetID
+	 * $param Json Object $filerdata In the format {"filterfield":"=value"}
 	 * @return  json object assetdetails
+	 * 
 	 */
-function getAsset($assetID){
-	
+function getAsset($assetID,$filerdata){
+	$querystring="";
+	if($querystring !== null){
+	$querystring="filter=".json_encode($filerdata);
+	}
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
 	
-	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey());
+	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),$querystring);
 	if($assetArray == false){
 		trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
 	}
@@ -132,7 +137,7 @@ function updateStatus($assetID,$status){
 function checkIfAssetExists($assetID){
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
 	
-	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey());
+	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),"");
 	if($assetArray == false){
 		trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
 	}

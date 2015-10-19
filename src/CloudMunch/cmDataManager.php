@@ -16,9 +16,12 @@ require_once ("AppErrorLogHandler.php");
   */
 
 class cmDataManager{
-function getDataForContext($url,$apikey) {
-	
+function getDataForContext($url,$apikey,$querystring) {
+	if(empty($querystring)){
 	$url=$url."?apikey=".$apikey;
+	}else{
+		$url=$url."&apikey=".$apikey;
+	}
 	$result=$this->do_curl($url, null, "GET", null, null);
 	
 	

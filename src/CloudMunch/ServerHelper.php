@@ -42,7 +42,7 @@ require_once ("AppErrorLogHandler.php");
  function getServer($servername){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
  	loghandler(INFO,"serverurl from serverhelper:" . $serverurl);
- 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey());
+ 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),null);
 	
 	//$deployArray = json_decode($deployArray);
 	$detailArray=$deployArray->data;
@@ -237,7 +237,7 @@ require_once ("AppErrorLogHandler.php");
   */
  function checkServerExists($servername){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
- 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey());
+ 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),"");
 	
 	//$deployArray = json_decode($deployArray);
 	$detailArray=$deployArray->data;
