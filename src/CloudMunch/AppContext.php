@@ -1,4 +1,5 @@
 <?php
+
 /**
  *  (c) CloudMunch Inc.
  *  All Rights Reserved
@@ -9,102 +10,238 @@
  */
 namespace CloudMunch;
 
- 
- /**
-  * Class AppContext
-  * @package CloudMunch
-  * @author Rosmi
-  * This class is the Applictaion Context object that has all the environment variables needed 
-  * for plugin runtime.
-  */
- class AppContext{
- 	private $masterurl = "";
-	private $cloudproviders="";
-	private $domainName="";
-	private $project="";
-	private $job="";
+/**
+ * Class AppContext
+ * 
+ * @package CloudMunch
+ * @author Rosmi
+ *         This class is the Applictaion Context object that has all the environment variables needed
+ *         for plugin runtime.
+ */
+class AppContext {
+	private $masterurl = "";
+	private $cloudproviders = "";
+	private $domainName = "";
+	private $project = "";
+	private $job = "";
+	private $workspaceLocation = "";
+	private $archiveLocation = "";
+	private $stepid = "";
+	private $targetServer="";
+	private $integrations="";
+	private $reportsLocation="";
+	private $runnumber="";
+	private $apikey="";
 	
 	/**
 	 * 
+	 * @return Workspace location of the job
+	 */
+	function getWorkSpaceLocation() {
+		
+		return $this->workspaceLocation;
+	}
+	
+	/**
+	 * 
+	 * @param set  Workspace loctaion
+	 */
+	function setWokSpaceLocation($workspaceloc) {
+		$this->workspaceLocation=$workspaceloc;
+	}
+	
+	/**
+	 * 
+	 * @return Archive Location if build run is selected
+	 */
+	function getArchiveLocation() {
+		return $this->archiveLocation;
+	}
+	
+	/**
+	 * 
+	 * @param Set archive location
+	 */
+	function setArchiveLocation($archiveLoc) {
+		$this->archiveLocation=$archiveLoc;
+	}
+	
+	/**
+	 * 
+	 * @return ID of current step
+	 */
+	function getStepID() {
+		return $this->stepid;
+	}
+	
+	/**
+	 * 
+	 * @param Set step ID
+	 */
+	function setStepID($stepid) {
+		$this->stepid=$stepid;
+	}
+	 /**
+	  * 
+	  * @param set Target Server
+	  */
+	function setTargetServer($targetServer){
+		$this->targetServer=$targetServer;
+		
+	}
+	
+	/**
+	 * 
+	 * @return Get target server
+	 */
+	function getTargetServer(){
+		return $this->targetServer;
+	
+	}
+	/**
+	 *
 	 * @return string masterurl: Cloudmunch service URL.
 	 */
-	function getMasterURL(){
+	function getMasterURL() {
 		return $this->masterurl;
 	}
 	
 	/**
 	 * 
-	 * @param string  mURL : Cloudmunch service URL.
+	 * @param Set integration details
 	 */
-	function setMasterURL($mURL){
-		$this->masterurl=$mURL;
+	function setIntegrations($ints){
+		$this->integrations=$ints;
 	}
 	
 	/**
-	 * 
-	 * @return array  cloudproviders
+	 * @return Integration details
 	 */
-	function getCloudproviders(){
+    function getIntegrations(){
+		return $this->integrations;
+	}
+	
+	/**
+	 *
+	 * @param
+	 *        	string mURL : Cloudmunch service URL.
+	 */
+	function setMasterURL($mURL) {
+		$this->masterurl = $mURL;
+	}
+	
+	/**
+	 *
+	 * @return array cloudproviders
+	 */
+	function getCloudproviders() {
 		return $this->cloudproviders;
-		
 	}
 	
 	/**
-	 * 
-	 * @param array  cps provider details.
+	 *
+	 * @param
+	 *        	array cps provider details.
 	 */
-	function setCloudproviders($cps){
-		$this->cloudproviders=$cps;
+	function setCloudproviders($cps) {
+		$this->cloudproviders = $cps;
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return string domainName
 	 */
-	function getDomainName(){
+	function getDomainName() {
 		return $this->domainName;
 	}
 	
 	/**
-	 * 
-	 * @param string dname : domain name
+	 *
+	 * @param
+	 *        	string dname : domain name
 	 */
-	function setDomainName($dname){
-		$this->domainName=$dname;
+	function setDomainName($dname) {
+		$this->domainName = $dname;
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return string project
 	 */
-	function getProject(){
+	function getProject() {
 		return $this->project;
 	}
 	
 	/**
-	 * 
-	 * @param string $proj 
+	 *
+	 * @param string $proj        	
 	 */
-	function setProject($proj){
-		$this->project=$proj;
+	function setProject($proj) {
+		$this->project = $proj;
 	}
 	
 	/**
-	 * 
+	 *
 	 * @return string $job
 	 */
-	function getJob(){
+	function getJob() {
 		return $this->job;
 	}
 	
+	/**
+	 *
+	 * @param string $job        	
+	 */
+	function setJob($job) {
+		$this->job = $job;
+	}
 	
 	/**
 	 * 
-	 * @param string  $job 
+	 * @return reportsLocation
 	 */
-	function setJob($job){
-		$this->job=$job;
-		
+	function getReportsLocation(){
+		return $this->reportsLocation;
 	}
- }
+	
+	/**
+	 * 
+	 * @param reportsLocation
+	 */
+	function setReportsLocation($reportLoc){
+		$this->reportsLocation=$reportLoc;
+	}
+	
+	/**
+	 * 
+	 * @return run number
+	 */
+	function getRunNumber(){
+		return $this->runnumber;
+	}
+	
+	/**
+	 * 
+	 * @param  build number
+	 */
+	function setRunNumber($runno){
+		$this->runnumber=$runno;
+	}
+	/**
+	 *
+	 * @return API key
+	 */
+	function getAPIKey(){
+		return $this->apikey;
+	}
+	
+	/**
+	 *
+	 * @param  Set API key
+	 */
+	function setAPIKey($ak){
+		$this->apikey=$ak;
+	}
+	
+}
 ?>

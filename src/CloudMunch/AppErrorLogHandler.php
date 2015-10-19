@@ -82,7 +82,10 @@ function loghandler($msgNo, $msg) {
 			break;
 		case INFO :
 			echo "<b>INFO</b> [$date] $msg\n";
-
+		case ERROR:
+			echo "<b>ERROR</b> [$date] $msg\n";
+			
+			
 	}
 }
 ?>
