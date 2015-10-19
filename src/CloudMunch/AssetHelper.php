@@ -64,7 +64,7 @@ function getAsset($assetID){
  * * @param string $assetStatus Asset status ,valid values are STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL
  * @param array $assetData Array of asset properties
  */
-function  addAsset($assetname,$assettype,$assetStatus,$assetData){
+function  addAsset($assetname,$assettype,$assetStatus,$assetExternalRef,$assetData){
 	if(empty($assetname)||(empty($assettype))||(empty($assetStatus))){
 		trigger_error ( "Asset name ,status and type need to be provided", E_USER_ERROR );
 	}
@@ -78,6 +78,7 @@ function  addAsset($assetname,$assettype,$assetStatus,$assetData){
 	$assetData[name]=$assetname;
 	$assetData[type]=$assettype;
 	$assetData[status]=$assetStatus;
+	$assetData[external_reference]=$assetExternalRef;
 	echo "asset data....";
 	var_dump($assetData);
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/";
