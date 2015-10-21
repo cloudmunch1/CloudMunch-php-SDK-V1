@@ -65,7 +65,7 @@ namespace CloudMunch\Integrations;
  			$regfields=$integrations->$provname->$conf;
  			$integrationdetails=array();
  			foreach ($regfields as $key=>$value){
- 				$integrationdetails[$key]=$cloudproviders->$provname->$key;
+ 				$integrationdetails[$key]=$value;
  			
  			}
  			return $integrationdetails;
