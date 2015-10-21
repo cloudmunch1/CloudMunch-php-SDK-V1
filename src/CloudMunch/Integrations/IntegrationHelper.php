@@ -59,10 +59,10 @@ namespace CloudMunch\Integrations;
  		
  		
  		if(($provname != null) && (strlen(trim($provname))>0)){
- 			$tpe="type";
+ 			//$tpe="type";
  			$conf="configuration";
- 			$type=$integrations->$provname->$tpe;
- 			$regfields=$integrations->$provname->$conf->$type;
+ 			//$type=$integrations->$provname->$tpe;
+ 			$regfields=$integrations->$provname->$conf;
  			$integrationdetails=array();
  			foreach ($regfields as $key=>$value){
  				$integrationdetails[$key]=$cloudproviders->$provname->$key;
