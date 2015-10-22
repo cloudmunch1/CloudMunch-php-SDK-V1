@@ -44,7 +44,7 @@ class AssetHelper{
 	 */
 function getAsset($assetID,$filerdata){
 	$querystring="";
-	if($querystring !== null){
+	if($filerdata !== null){
 	$querystring="filter=".json_encode($filerdata);
 	}
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
