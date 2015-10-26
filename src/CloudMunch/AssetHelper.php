@@ -54,7 +54,7 @@ function getAsset($assetID,$filerdata){
 		trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
 	}
 	
-	$assetArray = json_decode($assetArray);
+	//$assetArray = json_decode($assetArray);
 	$assetdata=$assetArray->data;
 	if($assetdata == null){
 		trigger_error ( "Asset does not exist", E_USER_ERROR );
@@ -87,7 +87,9 @@ function  addAsset($assetname,$assettype,$assetStatus,$assetExternalRef,$assetDa
 	echo "asset data....";
 	var_dump($assetData);
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/";
-	$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$assetData);
+	$retArray=$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$assetData);
+	$retdata=$retArray->data;
+	return $retdata;
 	
 }
 
