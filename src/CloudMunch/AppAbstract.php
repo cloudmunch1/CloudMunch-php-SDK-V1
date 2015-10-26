@@ -281,7 +281,7 @@ abstract class AppAbstract {
 	 */
 	public function outputPipelineVariables($variablename,$variable){
 		if($this->newVer){
-			$fileloc=$this->appContext->getReportsLocation()."/".$this->appContext->getStepID().".variables";
+			$fileloc=$this->appContext->getReportsLocation()."/".$this->appContext->getStepID().".out";
 			$varlist=file_get_contents($fileloc);
 			if(($varlist ==null) ||(strlen($varlist)==0)){
 				$varlist=array($variablename => $variable);	
