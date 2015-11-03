@@ -16,6 +16,14 @@ require_once ("AppErrorLogHandler.php");
   */
 
 class cmDataManager{
+	
+	/**
+	 * 
+	 * @param string $url 
+	 * @param string $apikey
+	 * @param string $querystring
+	 * @return boolean|jsonobject|string
+	 */
 function getDataForContext($url,$apikey,$querystring) {
 	if(empty($querystring)){
 	$url=$url."?apikey=".$apikey;
@@ -26,20 +34,27 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	
 	$result=$result["response"];
-	$result=json_decode($result);
+	
+	
 	if(($result==null)){
 		return false;
 	}
-	
-	
-	if($result->request->status !== "SUCCESS") {
-			
-				loghandler(INFO,$result->request->message);
-				return $result;
+	$resultdecode=json_decode($result);
+	if(is_null($resultdecode)){
+		
+		return $result;
 	}
 	
 	
-	return $result; 
+	if($resultdecode->request->status !== "SUCCESS") {
+			
+				loghandler(INFO,$resultdecode->request->message);
+				return $resultdecode;
+	}
+	
+	
+	
+	return $resultdecode; 
 }
 
 /**
