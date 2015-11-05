@@ -417,14 +417,14 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 		$msg =  $results;
 		loghandler("INFO", "Request to provider ended.: Details below");
 		loghandler("INFO", str_pad("|-", 120, "-"));
-		loghandler("INFO", "|URL......... :" . $url);
-		loghandler("INFO", "|Method...... :" . $requestType);
-		loghandler("INFO", "|Header sent. :" . $headerSent);
-		loghandler("INFO", "|Data sent... :" . $this->json_string($data));
+	//	loghandler("INFO", "|URL......... :" . $url);
+	//	loghandler("INFO", "|Method...... :" . $requestType);
+	//	loghandler("INFO", "|Header sent. :" . $headerSent);
+	//	loghandler("INFO", "|Data sent... :" . $this->json_string($data));
 		loghandler("INFO", "|Response code :" . $responseCode);
 		$responseText = $this->startsWith($results, "<") ? $this->html2txt($results) : $results;
 		//loghandler("INFO", "|Response text :" . $responseText);
-		loghandler("INFO", str_pad("-", 120, "-"));
+		//loghandler("INFO", str_pad("-", 120, "-"));
 		//loghandler("INFO", "Response :" . $responseText);
 	}
 	$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);

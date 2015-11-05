@@ -292,7 +292,10 @@ abstract class AppAbstract {
 	 */
 	public function performAppcompletion() {
 		loghandler ( INFO, "Performing cleanup" );
+		if (is_null ( $this->cloudmunchService )) {
+		}else{	
 		$this->cloudmunchService->deleteKeys ();
+		}
 		loghandler ( INFO, "App completed successfully" );
 		$date_b = new DateTime ();
 		$interval = date_diff ( $this->stime, $date_b );
