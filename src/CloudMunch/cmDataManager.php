@@ -67,7 +67,7 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	
 	$url=$url."?apikey=".$apikey;
-	$result=$this->do_curl($url, null, "PUT", $dat, null);
+	$result=$this->do_curl($url, null, "POST", $dat, null);
 	
 	$result=$result["response"];
 	$result=json_decode($result);

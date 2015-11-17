@@ -74,6 +74,79 @@ class CloudmunchService {
 	
 	/**
 	 * 
+	 * @param string $context Context for which data has to be retrieved.
+	 * @param string $contextid ID of the context.
+	 * @param array $filterdata Filter data
+	 * @return array data
+	 */
+	public function getCloudmunchData($context,$contextid,$filterdata){
+		$querystring="";
+		if($filerdata !== null){
+			$querystring="filter=".json_encode($filerdata);
+		}
+		$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/".$contextid;
+		
+		$dataArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),$querystring);
+		if($dataArray == false){
+			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+		}
+		
+		//$assetArray = json_decode($assetArray);
+		$data=$dataArray->data;
+		if($data == null){
+			trigger_error ( "Data does not exist", E_USER_ERROR );
+		}
+		return $data;
+		
+	}
+	
+	/**
+	 * 
+	 * @param string $context Context for which data has to be updated.
+	 * @param string $contextid ID of the context.
+	 * @param array $data Data to be updated
+	 * @return array data
+	 */
+	public function updateCloudmunchData($context,$contextid,$data){
+		$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/";
+		if(empty($contextid)){
+			$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/";
+		}else{
+			$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/".$contextid;
+		}
+		$retArray=$this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		$retdata=$retArray->data;
+		return $retdata;
+	}
+	
+	/**
+	 *
+	 * @param string $context Context for which data has to be added.
+	 * @param array $data Data to be updated
+	 * @return array data
+	 */
+	public function addCloudmunchData($context,$data){
+		$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/";
+		
+			
+		$retArray=$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		$retdata=$retArray->data;
+		return $retdata;
+	}
+	
+	/**
+	 * 
+	 * @param string $context Context for which data has to be deleted.
+	 * @param string $contextid ID of the context.
+	 */
+	public function deleteCloudmunchData($context,$contextid){
+		$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/".$context."/".$contextid;
+		$result=$this->cmDataManager->deleteDataForContext($serverurl,$this->appContext->getAPIKey());
+	}
+	
+	
+	/**
+	 * 
 	 * @param string $filekey name of the key field
 	 * @param string $context context of the key
 	 * @param string $contextid id of the context
