@@ -153,7 +153,7 @@ abstract class AppAbstract {
 			$jsonParams = json_decode ( $jsonParameters );
 			foreach ( $jsonParams as $key => $value ) {
 				if (($key !== "cloudproviders") && ($key !== "password") && ($key !== "inputparameters")) {
-					$this->loghandler ( DEBUG, $key . ": " . $value );
+					$this->logHandler->log ( DEBUG, $key . ": " . $value );
 				}
 			}
 			
@@ -187,7 +187,7 @@ abstract class AppAbstract {
 	 * This function initializes log handler
 	 */
 	function createLogHandler(){
-		$logHandler=new LogHandler($this->appContext);
+		$this->logHandler=new LogHandler($this->appContext);
 	}
 	
 	/**
@@ -314,15 +314,15 @@ abstract class AppAbstract {
 	 * This is a lifecycle method invoked at the completion of the plugin to capture some data.
 	 */
 	public function performAppcompletion() {
-		$this->loghandler ( INFO, "Performing cleanup" );
+		$this->logHandler->log ( INFO, "Performing cleanup" );
 		if (is_null ( $this->cloudmunchService )) {
 		}else{	
 		$this->cloudmunchService->deleteKeys ();
 		}
-		$this->loghandler ( INFO, "App completed successfully" );
+		$this->logHandler->log ( INFO, "App completed successfully" );
 		$date_b = new DateTime ();
 		$interval = date_diff ( $this->stime, $date_b );
-		$this->loghandler ( INFO, "Total time taken: " . $interval->format ( '%h:%i:%s' ) );
+		$this->logHandler->log( INFO, "Total time taken: " . $interval->format ( '%h:%i:%s' ) );
 	}
 	
 	/**
