@@ -32,6 +32,22 @@ class AppContext {
 	private $reportsLocation="";
 	private $runnumber="";
 	private $apikey="";
+	private $stepname="";
+	
+	/**
+	 * @return Step name
+	 */
+	function getStepName(){
+		return $this->stepname;
+	}
+	
+	/**
+	 * 
+	 * @param  $step Step name
+	 */
+	function setStepName($step){
+		$this->stepname=$step;
+	}
 	
 	/**
 	 * 

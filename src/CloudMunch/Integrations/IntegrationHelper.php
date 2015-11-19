@@ -15,6 +15,7 @@ namespace CloudMunch\Integrations;
  *
  */
   class IntegrationHelper{
+  	$logHelper=null;
   	
   	/**
   	 * This method process plugin input to retreive the provider details.
@@ -23,6 +24,10 @@ namespace CloudMunch\Integrations;
   	 *         
   	 */
  	
+  	
+  	public function __construct($logHandler){
+  	 $this->logHelper=	$logHandler;
+  	}
  	function getService($jsonParams){
  		
  		$arg10 = 'cloudproviders';
@@ -30,7 +35,7 @@ namespace CloudMunch\Integrations;
 		$cloudproviders=json_decode($cloudproviders);
 		$arg1 = 'providername';
 		$provname = $jsonParams-> $arg1;
-		loghandler(DEBUG, "Provider Name: ".$provname);
+		$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
 	    $provtype="providerType";
 	    
 	   
@@ -55,7 +60,7 @@ namespace CloudMunch\Integrations;
  	function getIntegration($jsonParams,$integrations){
  		$arg1 = 'providername';
  		$provname = $jsonParams-> $arg1;
- 		loghandler(DEBUG, "Provider Name: ".$provname);
+ 		$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
  		
  		
  		if(($provname != null) && (strlen(trim($provname))>0)){

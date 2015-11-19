@@ -28,10 +28,11 @@ class AssetHelper{
 	
 	private $appContext=null;
 	private $cmDataManager = null;
+	private $logHelper=null;
 	
-	
-	public function __construct($appContext){
+	public function __construct($appContext,$logHandler){
 		$this->appContext = $appContext;
+		$this->logHelper=$logHandler;
 		$this->cmDataManager = new cmDataManager();
 	
 	}
@@ -147,7 +148,7 @@ function checkIfAssetExists($assetID){
 	$assetArray = json_decode($assetArray);
 	$assetdata=$assetArray->data;
 	if($assetdata == null){
-		loghandler(INFO,"Asset does not exist");
+		$this->logHelper->log(INFO,"Asset does not exist");
 		return false;
 	}
 	return true;

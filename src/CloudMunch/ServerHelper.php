@@ -27,9 +27,11 @@ require_once ("AppErrorLogHandler.php");
 
  private $appContext=null;
  private $cmDataManager = null;
+ private $logHelper=null;
 
-  public function __construct($appContext){
+  public function __construct($appContext,$logHandler){
   	$this->appContext = $appContext;
+  	$this->logHelper=$logHandler;
   	$this->cmDataManager = new cmDataManager();
  	
  }
@@ -41,7 +43,7 @@ require_once ("AppErrorLogHandler.php");
   */
  function getServer($servername){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
- 	loghandler(INFO,"serverurl from serverhelper:" . $serverurl);
+ 	$this->logHelper->log(DEBUG,"serverurl from serverhelper:" . $serverurl);
  	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),null);
 	
 	//$deployArray = json_decode($deployArray);
@@ -268,7 +270,7 @@ function checkConnect($dns,$sshport = 22) {
 	        trigger_error("Invalid dns" . $dns, E_USER_ERROR);
 	    }
 
-	    loghandler(INFO, "Checking connectivity to: " . $dns);
+	    $this->logHelper->log(INFO, "Checking connectivity to: " . $dns);
 
 	    $connection = ssh2_connect($dns, $sshport);
 	    if (!$connection) {

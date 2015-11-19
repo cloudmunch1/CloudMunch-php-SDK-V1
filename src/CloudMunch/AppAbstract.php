@@ -51,6 +51,12 @@ abstract class AppAbstract {
 	private $cloudmunchService = null;
 	
 	/**
+	 * 
+	 * @var LogHandler object
+	 */
+	private $logHandler =null;
+	
+	/**
 	 * This is an abstract method to be implemented by every plugin.
 	 * 
 	 * @param array $processparameters
@@ -122,7 +128,9 @@ abstract class AppAbstract {
 			$stepDetails = $varParams->$arg;
 			$stepDetails = json_decode ( $stepDetails );
 			$appContext->setStepID ( $stepDetails->id );
+			$appContext->setStepName($stepDetails->name);
 			$appContext->setReportsLocation ( $stepDetails->reports_location );
+			
 			
 			$arg = "{archive_location}";
 			$archiveloc = $varParams->$arg;
@@ -145,7 +153,7 @@ abstract class AppAbstract {
 			$jsonParams = json_decode ( $jsonParameters );
 			foreach ( $jsonParams as $key => $value ) {
 				if (($key !== "cloudproviders") && ($key !== "password") && ($key !== "inputparameters")) {
-					loghandler ( DEBUG, $key . ": " . $value );
+					$this->loghandler ( DEBUG, $key . ": " . $value );
 				}
 			}
 			
@@ -171,7 +179,22 @@ abstract class AppAbstract {
 			$appContext->setJob ( $jobname );
 			$this->setAppContext ( $appContext );
 		}
+		$this->createLogHandler();
 		return $this->setParameterObject ( $jsonParams );
+	}
+	
+	/**
+	 * This function initializes log handler
+	 */
+	function createLogHandler(){
+		$logHandler=new LogHandler($this->appContext);
+	}
+	
+	/**
+	 * This function returns the reference to log handler
+	 */
+	function getLogHandler(){
+		return $this->logHandler;
 	}
 	
 	/**
@@ -207,7 +230,7 @@ abstract class AppAbstract {
 	 * @return ServerHelper serverhelper
 	 */
 	function getCloudmunchServerHelper() {
-		$serverhelper = new ServerHelper ( $this->appContext );
+		$serverhelper = new ServerHelper ( $this->appContext ,$this->logHandler);
 		return $serverhelper;
 	}
 	
@@ -218,7 +241,7 @@ abstract class AppAbstract {
 	 * @return AssetHelper assethelper
 	 */
 	function getCloudmunchAssetHelper() {
-		$assethelper = new AssetHelper ( $this->appContext );
+		$assethelper = new AssetHelper ( $this->appContext,$this->logHandler );
 		return $assethelper;
 	}
 	
@@ -229,7 +252,7 @@ abstract class AppAbstract {
 	 */
 	function getCloudmunchService() {
 		if (is_null ( $this->cloudmunchService )) {
-			$this->cloudmunchService = new CloudmunchService ( $this->appContext );
+			$this->cloudmunchService = new CloudmunchService ( $this->appContext ,$this->logHandler);
 		}
 		
 		return $this->cloudmunchService;
@@ -259,7 +282,7 @@ abstract class AppAbstract {
 	 * data.
 	 */
 	public function initialize() {
-		loghandler ( INFO, "App execution started" );
+		//$this->loghandler ( INFO, "App execution started" );
 		$date_a = new DateTime ();
 		$this->stime = $date_a;
 		$this->getInput ();
@@ -273,7 +296,7 @@ abstract class AppAbstract {
 	public function getProcessInput() {
 		$cloudservice = null;
 		
-		$integrationHelper = new IntegrationHelper ();
+		$integrationHelper = new IntegrationHelper ($this->logHandler);
 		if ($this->newVer) {
 			$integrationService = $integrationHelper->getIntegration ( $this->getParameterObject (), $this->appContext->getIntegrations () );
 		} else {
@@ -291,15 +314,15 @@ abstract class AppAbstract {
 	 * This is a lifecycle method invoked at the completion of the plugin to capture some data.
 	 */
 	public function performAppcompletion() {
-		loghandler ( INFO, "Performing cleanup" );
+		$this->loghandler ( INFO, "Performing cleanup" );
 		if (is_null ( $this->cloudmunchService )) {
 		}else{	
 		$this->cloudmunchService->deleteKeys ();
 		}
-		loghandler ( INFO, "App completed successfully" );
+		$this->loghandler ( INFO, "App completed successfully" );
 		$date_b = new DateTime ();
 		$interval = date_diff ( $this->stime, $date_b );
-		loghandler ( INFO, "Total time taken: " . $interval->format ( '%h:%i:%s' ) );
+		$this->loghandler ( INFO, "Total time taken: " . $interval->format ( '%h:%i:%s' ) );
 	}
 	
 	/**
@@ -331,7 +354,7 @@ abstract class AppAbstract {
 		}
 		
 	}
-
+	
 	
 	
 }

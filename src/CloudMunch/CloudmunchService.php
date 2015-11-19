@@ -25,8 +25,10 @@ class CloudmunchService {
 	private $appContext = null;
 	private $cmDataManager;
 	private $keyArray = array ();
-	public function __construct($appContext) {
+	private $logHelper=null;
+	public function __construct($appContext,$logHandler) {
 		$this->appContext = $appContext;
+		$this->logHelper=$logHandler;
 		$this->cmDataManager = new cmDataManager ();
 	}
 	/**

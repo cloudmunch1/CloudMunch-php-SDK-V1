@@ -16,6 +16,11 @@ require_once ("AppErrorLogHandler.php");
   */
 
 class cmDataManager{
+	private $logHelper=null;
+	public function __construct($logHandler) {
+		
+		$this->logHelper=$logHandler;
+	}
 	
 	/**
 	 * 
@@ -48,7 +53,7 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	if($resultdecode->request->status !== "SUCCESS") {
 			
-				loghandler(INFO,$resultdecode->request->message);
+				$this->logHelper->log(INFO,$resultdecode->request->message);
 				return $resultdecode;
 	}
 	
@@ -168,11 +173,11 @@ function updateContext($masterurl, $context, $domain, $serverArray) {
 	$result = curl_exec($post);
 	$response_code = curl_getinfo($post, CURLINFO_HTTP_CODE);
 if(($result === FALSE) && ($response_code != 100)) {
-	loghandler(INFO,"result:" . $response_code);
+	$this->logHelper->log(INFO,"result:" . $response_code);
 	trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
 }else{
-	loghandler(INFO,"Updated:" . $result);
-	loghandler(INFO,"result:" . $result);
+	$this->logHelper->log(INFO,"Updated:" . $result);
+	$this->logHelper->log(INFO,"result:" . $result);
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 
@@ -212,11 +217,11 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 	$result = curl_exec($post);
 	$response_code = curl_getinfo($post, CURLINFO_HTTP_CODE);
 	if(($result === FALSE) && ($response_code != 100)) {
-		loghandler(INFO,"result:" . $response_code);
+		$this->logHelper->log(INFO,"result:" . $response_code);
 		trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
 	}else{
-		loghandler(INFO,"Updated:" . $result);
-		loghandler(INFO,"result:" . $result);
+		$this->logHelper->log(INFO,"Updated:" . $result);
+		$this->logHelper->log(INFO,"result:" . $result);
 		//echo "\nresult:" . $result.PHP_EOL;
 	}
 
@@ -338,8 +343,8 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 if($result === FALSE) {
 	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
 }else{
-	loghandler(INFO,"result:" . $result);
-	loghandler(INFO, "Notification send");
+	$this->logHelper->log(INFO,"result:" . $result);
+	$this->logHelper->log(INFO, "Notification send");
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 }
@@ -403,25 +408,25 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 		$curlMsg = curl_error($ch);
 		$msg =  "ERROR: Could not request provider " . $curlMsg ;
 		$hostDown = "503 Service Unavailable";
-		loghandler("INFO", "Request to provider ended in error. Response:" . $curlMsg);
+		$this->logHelper->log("INFO", "Request to provider ended in error. Response:" . $curlMsg);
 		if (strstr($msg, $hostDown)) {
-			loghandler("INFO", "Provider service is not available now. Please retry after some time.");
+			$this->logHelper->log("INFO", "Provider service is not available now. Please retry after some time.");
 		} elseif (strstr($msg, " 404 ")) {
-			loghandler("INFO", "Provider service is not found or not configured correctly. Please contact support");
+			$this->logHelper->log("INFO", "Provider service is not found or not configured correctly. Please contact support");
 		} elseif (strstr($msg, "Operation timed out")) {
-			loghandler("INFO", "Provider service operation timed out. Please retry after some time.");
+			$this->logHelper->log("INFO", "Provider service operation timed out. Please retry after some time.");
 		}
 	} else {
 		$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$headerSent = curl_getinfo($ch, CURLINFO_HEADER_OUT);
 		$msg =  $results;
-		loghandler("INFO", "Request to provider ended.: Details below");
-		loghandler("INFO", str_pad("|-", 120, "-"));
+		$this->logHelper->log("DEBUG", "Request to provider ended.: Details below");
+		$this->logHelper->log("DEBUG", str_pad("|-", 120, "-"));
 	//	loghandler("INFO", "|URL......... :" . $url);
 	//	loghandler("INFO", "|Method...... :" . $requestType);
 	//	loghandler("INFO", "|Header sent. :" . $headerSent);
 	//	loghandler("INFO", "|Data sent... :" . $this->json_string($data));
-		loghandler("INFO", "|Response code :" . $responseCode);
+		$this->logHelper->log("DEBUG", "|Response code :" . $responseCode);
 		$responseText = $this->startsWith($results, "<") ? $this->html2txt($results) : $results;
 		//loghandler("INFO", "|Response text :" . $responseText);
 		//loghandler("INFO", str_pad("-", 120, "-"));
@@ -432,15 +437,15 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 	curl_close($ch);
 	if ($responseCode != 200) {
 		if ($responseCode === 0) {
-			loghandler("ERROR", "Interface system url host could not be resolved. Please check configurations/settings");
+			$this->logHelper->log("ERROR", "Interface system url host could not be resolved. Please check configurations/settings");
 		} elseif ($responseCode === 401) {
-			loghandler("ERROR", "Interface system url host could not be accessed due to authentication failure");
+			$this->logHelper->log("ERROR", "Interface system url host could not be accessed due to authentication failure");
 		} else {
 		//	$commonMessage = array();
 		//	$commonMessage["503"] = "Service is unavailable now";
 		//	$responseMessage = $this->json_value($commonMessage, $responseCode, "Interface service is experiencing issues");
 			//loghandler("ERROR", "Call to  interface ended in error [" . $responseCode . "] " . $responseMessage);
-			loghandler("ERROR", "Service is not available");
+			$this->logHelper->log("ERROR", "Service is not available");
 		}
 	}
 	$response = array();

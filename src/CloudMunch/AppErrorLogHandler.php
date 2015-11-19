@@ -64,13 +64,14 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 }
 
 set_error_handler("myErrorHandler");
+date_default_timezone_set('UTC');
 
 /**
  * 
  * @param string  $msgNo : DEBUG or INFO.
  * @param string $msg : message to be logged.
  */
-function loghandler($msgNo, $msg) {
+/* function loghandler($msgNo, $msg) {
 
 	date_default_timezone_set('UTC');
 	$date = date(DATE_ATOM);
@@ -89,5 +90,5 @@ function loghandler($msgNo, $msg) {
 			
 			
 	}
-}
+} */
 ?>
