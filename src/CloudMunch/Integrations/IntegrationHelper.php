@@ -15,7 +15,7 @@ namespace CloudMunch\Integrations;
  *
  */
   class IntegrationHelper{
-  	$logHelper=null;
+  	private $logHelper=null;
   	
   	/**
   	 * This method process plugin input to retreive the provider details.
