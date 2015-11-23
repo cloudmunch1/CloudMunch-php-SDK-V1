@@ -10,6 +10,7 @@
  */
 namespace CloudMunch;
 
+use CloudMunch\cmDataManager;
 
 /**
  * 
@@ -70,12 +71,12 @@ class RoleHelper{
 
 	/**
 	 * 
-	 * @param  String  $role_id
+	 * @param  String  $roleID
 	 * @param  Json Object $filterdata In the format {"filterfield":"=value"}
 	 * @return json object roledetails
 	 * 
 	 */
-	function getRole($role_id, $filterdata)
+	function getRole($roleID, $filterdata)
 	{
 		$querystring = "";
 	
@@ -83,7 +84,7 @@ class RoleHelper{
 			$querystring = "filter=" . json_encode($filterdata);
 		}
 	
-		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $role_id;
+		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $roleID;
 		$roleArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), $querystring);
 		
 		if ($roleArray == false) {
@@ -100,17 +101,17 @@ class RoleHelper{
 
 	/**
 	 * 
-	 * @param string $role_name Name of the role
+	 * @param string $roleName Name of the role
 	 * @param string $role_status Role status ,valid values are success,failed,in-progress
 	 * @param array  $roleData Array of role properties
 	 */
-	function addRole($role_name, $roleData = null)
+	function  addRole($roleName, $roleData = null)
 	{
-		if (empty($role_name)) {
+		if (empty($roleName)) {
 			trigger_error ( "Role name need to be provided", E_USER_ERROR );
 		}
 		
-		$roleData[name] = $role_name;
+		$roleData[name] = $roleName;
 		$serverurl      = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers";
 		$retArray       = $this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $roleData);
 		$retdata        = $retArray->data;
@@ -122,9 +123,9 @@ class RoleHelper{
 	 * @param String Role ID
 	 * @param JsonObject Role Data
 	 */
-	function  updateRole($role_id, $roleData = null)
+	function  updateRole($roleID, $roleData = null)
 	{
-		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $role_id;
+		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $roleID;
 		
 		$this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $roleData);
 
@@ -132,12 +133,12 @@ class RoleHelper{
 
 	/**
 	 * Checks if Role exists in cloudmunch.
-	 * @param string $role_id
+	 * @param string $roleID
 	 * @return boolean
 	 */
-	function checkIfRoleExists($role_id)
+	function checkIfRoleExists($roleID)
 	{
-		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $role_id;		
+		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers/" . $roleID;		
 		$roleArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), "");
 
 		if ($roleArray == false) {
