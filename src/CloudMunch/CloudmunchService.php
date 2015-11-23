@@ -29,7 +29,7 @@ class CloudmunchService {
 	public function __construct($appContext,$logHandler) {
 		$this->appContext = $appContext;
 		$this->logHelper=$logHandler;
-		$this->cmDataManager = new cmDataManager ();
+		$this->cmDataManager = new cmDataManager ($this->logHelper);
 	}
 	/**
 	 * This method is to invoke notification on cloudmunch.
@@ -156,8 +156,7 @@ class CloudmunchService {
 	 */
 	public function downloadKeys($filekey, $context, $contextid) {
 		$url = $serverurl = $this->appContext->getMasterURL () . "/applications/" . $this->appContext->getProject () . "/" . $context . "/" . $contextid;
-		$querystring = "?file=" . $filekey;
-		$url = $url . $querystring;
+		$querystring = "file=" . $filekey;
 		
 		$keyString = $this->cmDataManager->getDataForContext ( $url, $this->appContext->getAPIKey (), $querystring );
 		$filename = "keyfile" . rand ();
