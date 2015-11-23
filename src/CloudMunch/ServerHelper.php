@@ -25,14 +25,14 @@ require_once ("AppErrorLogHandler.php");
   */
  class ServerHelper{
 
- private $appContext=null;
+ private $appContext    = null;
  private $cmDataManager = null;
- private $logHelper=null;
+ private $logHelper     = null;
 
   public function __construct($appContext,$logHandler){
   	$this->appContext = $appContext;
-  	$this->logHelper=$logHandler;
-  	$this->cmDataManager = new cmDataManager();
+  	$this->logHelper  = $logHandler;
+  	$this->cmDataManager = new cmDataManager($this->logHelper);
  	
  }
  

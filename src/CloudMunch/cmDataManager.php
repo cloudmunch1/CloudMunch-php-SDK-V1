@@ -30,35 +30,31 @@ class cmDataManager{
 	 * @return boolean|jsonobject|string
 	 */
 function getDataForContext($url,$apikey,$querystring) {
-	if(empty($querystring)){
-	$url=$url."?apikey=".$apikey;
+	if (empty($querystring)) {
+		$url = $url . "?apikey=" . $apikey;
 	}else{
-		$url=$url."&apikey=".$apikey;
+		$url = $url . "?apikey=" . $apikey . "&" . $querystring;
 	}
-	$result=$this->do_curl($url, null, "GET", null, null);
+
+	$result = $this->do_curl($url, null, "GET", null, null);
 	
+	$result = $result["response"];
 	
-	$result=$result["response"];
-	
-	
-	if(($result==null)){
+	if (($result == null)) {
 		return false;
 	}
-	$resultdecode=json_decode($result);
-	if(is_null($resultdecode)){
-		
+
+	$resultdecode = json_decode($result);
+	
+	if (is_null($resultdecode)) {		
 		return $result;
 	}
 	
-	
-	if($resultdecode->request->status !== "SUCCESS") {
-			
-				$this->logHelper->log(INFO,$resultdecode->request->message);
-				return $resultdecode;
+	if($resultdecode->request->status !== "SUCCESS") {			
+		$this->logHelper->log(INFO, $resultdecode->request->message);
+		return $resultdecode;
 	}
-	
-	
-	
+		
 	return $resultdecode; 
 }
 
@@ -66,10 +62,8 @@ function getDataForContext($url,$apikey,$querystring) {
  * @return {"data":{"id":"SER2015101311095292382","name":"SER2015101311095292382"},"request":{"status":"SUCCESS"}}
  */
  function putDataForContext($url,$apikey,$data) {
-	
 	$dat=array("data"=>$this->json_object($data));
 	$dat=$this->json_string($this->json_object($dat));
-	
 	
 	$url=$url."?apikey=".$apikey;
 	$result=$this->do_curl($url, null, "POST", $dat, null);
@@ -422,15 +416,15 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 		$msg =  $results;
 		$this->logHelper->log("DEBUG", "Request to provider ended.: Details below");
 		$this->logHelper->log("DEBUG", str_pad("|-", 120, "-"));
-	//	loghandler("INFO", "|URL......... :" . $url);
-	//	loghandler("INFO", "|Method...... :" . $requestType);
-	//	loghandler("INFO", "|Header sent. :" . $headerSent);
-	//	loghandler("INFO", "|Data sent... :" . $this->json_string($data));
+	//	$this->logHelper->log("INFO", "|URL......... :" . $url);
+	//	$this->logHelper->log("INFO", "|Method...... :" . $requestType);
+	//	$this->logHelper->log("INFO", "|Header sent. :" . $headerSent);
+	//	$this->logHelper->log("INFO", "|Data sent... :" . $this->json_string($data));
 		$this->logHelper->log("DEBUG", "|Response code :" . $responseCode);
 		$responseText = $this->startsWith($results, "<") ? $this->html2txt($results) : $results;
-		//loghandler("INFO", "|Response text :" . $responseText);
-		//loghandler("INFO", str_pad("-", 120, "-"));
-		//loghandler("INFO", "Response :" . $responseText);
+	//	$this->logHelper->log("INFO", "|Response text :" . $responseText);
+	//	$this->logHelper->log("INFO", str_pad("-", 120, "-"));
+	//	$this->logHelper->log("INFO", "Response :" . $responseText);
 	}
 	$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	$headerSent = curl_getinfo($ch, CURLINFO_HEADER_OUT);
@@ -444,7 +438,7 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 		//	$commonMessage = array();
 		//	$commonMessage["503"] = "Service is unavailable now";
 		//	$responseMessage = $this->json_value($commonMessage, $responseCode, "Interface service is experiencing issues");
-			//loghandler("ERROR", "Call to  interface ended in error [" . $responseCode . "] " . $responseMessage);
+			//$this->logHelper->log("ERROR", "Call to  interface ended in error [" . $responseCode . "] " . $responseMessage);
 			$this->logHelper->log("ERROR", "Service is not available");
 		}
 	}
@@ -452,6 +446,7 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 	$response["code"] = $responseCode;
 	$response["header"] = $headerSent;
 	$response["response"] = $results;
+
 	
 	return $response;
 }

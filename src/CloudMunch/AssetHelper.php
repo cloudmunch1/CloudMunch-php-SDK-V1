@@ -26,14 +26,14 @@ require_once ("AppErrorLogHandler.php");
  */
 class AssetHelper{
 	
-	private $appContext=null;
+	private $appContext = null;
 	private $cmDataManager = null;
-	private $logHelper=null;
+	private $logHelper = null;
 	
 	public function __construct($appContext,$logHandler){
 		$this->appContext = $appContext;
 		$this->logHelper=$logHandler;
-		$this->cmDataManager = new cmDataManager();
+		$this->cmDataManager = new cmDataManager($this->logHelper);
 	
 	}
 	/**
@@ -46,7 +46,7 @@ class AssetHelper{
 function getAsset($assetID,$filerdata){
 	$querystring="";
 	if($filerdata !== null){
-	$querystring="filter=".json_encode($filerdata);
+		$querystring="filter=".json_encode($filerdata);
 	}
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
 	
@@ -85,8 +85,6 @@ function  addAsset($assetname,$assettype,$assetStatus,$assetExternalRef,$assetDa
 	$assetData[type]=$assettype;
 	$assetData[status]=$assetStatus;
 	$assetData[external_reference]=$assetExternalRef;
-	echo "asset data....";
-	var_dump($assetData);
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/";
 	$retArray=$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$assetData);
 	$retdata=$retArray->data;

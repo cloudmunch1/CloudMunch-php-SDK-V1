@@ -233,7 +233,29 @@ abstract class AppAbstract {
 		$serverhelper = new ServerHelper ( $this->appContext ,$this->logHandler);
 		return $serverhelper;
 	}
-	
+
+	/**
+	 * This method gives reference to EnvironmentHelper,this helper class has all the methods to get/set data on
+	 * assets registered with cloudmunch.
+	 * 
+	 * @return EnvironmentHelper environment helper
+	 */
+	function getCloudmunchEnvironmentHelper() {
+		$envHelper = new EnvironmentHelper ( $this->appContext,$this->logHandler );
+		return $envHelper;
+	}
+
+	/**
+	 * This method gives reference to RoleHelper,this helper class has all the methods to get/set data on
+	 * assets registered with cloudmunch.
+	 * 
+	 * @return RoleHelper environment helper
+	 */
+	function getCloudmunchRoleHelper() {
+		$roleHelper = new RoleHelper ( $this->appContext,$this->logHandler );
+		return $roleHelper;
+	}
+
 	/**
 	 * This method gives reference to AssetHelper,this helper class has all the methods to get/set data on
 	 * assets registered with cloudmunch.
