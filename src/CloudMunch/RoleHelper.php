@@ -26,7 +26,7 @@ class RoleHelper{
 	public function __construct($appContext,$logHandler){
 		$this->appContext    = $appContext;
 		$this->logHelper     = $logHandler;
-		$this->cmDataManager = new cmDataManager($this->logHelper);
+		$this->cmDataManager = new cmDataManager($this->logHelper, $this->appContext);
 	}	
 	
    /**
@@ -62,7 +62,8 @@ class RoleHelper{
 		$roleArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), $querystring);
 
 		if ($roleArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			$this->logHelper->log ( ERROR, "Could not retreive data from cloudmunch");
+			return false;
 		}
 		
 		$roledata = $roleArray->data;	
@@ -88,12 +89,13 @@ class RoleHelper{
 		$roleArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), $querystring);
 		
 		if ($roleArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			return false;
 		}
 		
 		$roledata = $roleArray->data;
 		if ($roledata == null) {
-			trigger_error ( "Role does not exist", E_USER_ERROR );
+			$this->logHelper->log ( ERROR, "Role does not exist");
+			return false;
 		}
 
 		return $roledata;
@@ -108,13 +110,17 @@ class RoleHelper{
 	function  addRole($roleName, $roleData = null)
 	{
 		if (empty($roleName)) {
-			trigger_error ( "Role name need to be provided", E_USER_ERROR );
+			$this->logHelper->log ( ERROR, "Role name need to be provided");
+			return false;
 		}
 		
 		$roleData[name] = $roleName;
 		$serverurl      = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/tiers";
 		$retArray       = $this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $roleData);
-		$retdata        = $retArray->data;
+		if ($retArray === false) {
+			return false;
+		}
+		$retdata = $retArray->data;
 		return $retdata;		
 	}
 
@@ -142,7 +148,7 @@ class RoleHelper{
 		$roleArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), "");
 
 		if ($roleArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			return false;
 		}
 		
 		$roleArray = json_decode(json_encode($roleArray));

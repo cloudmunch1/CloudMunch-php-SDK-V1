@@ -32,7 +32,7 @@ require_once ("AppErrorLogHandler.php");
   public function __construct($appContext,$logHandler){
   	$this->appContext = $appContext;
   	$this->logHelper  = $logHandler;
-  	$this->cmDataManager = new cmDataManager($this->logHelper);
+	$this->cmDataManager = new cmDataManager($this->logHelper, $this->appContext);
  	
  }
  
@@ -45,7 +45,9 @@ require_once ("AppErrorLogHandler.php");
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
  	$this->logHelper->log(DEBUG,"serverurl from serverhelper:" . $serverurl);
  	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),null);
-	
+	if($deployArray === false){
+		return false;
+	}
 	//$deployArray = json_decode($deployArray);
 	$detailArray=$deployArray->data;
 	
@@ -108,13 +110,15 @@ require_once ("AppErrorLogHandler.php");
  function addServer($server,$serverstatus,$docker = false){
  	
  	if(empty($assetStatus)){
- 		trigger_error ( "Server status need to be provided", E_USER_ERROR );
+ 		$this->logHelper->log (ERROR, "Server status need to be provided");
+ 		return false;
  	}
  	$statusconArray=array(STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL);
  	if(in_array ( $serverstatus ,$statusconArray )){
  	
  	}else{
- 		trigger_error ( "Invalid status", E_USER_ERROR );
+ 		$this->logHelper->log (ERROR, "Invalid status");
+ 		return false;
  	}
  	
  	
@@ -217,8 +221,8 @@ require_once ("AppErrorLogHandler.php");
 
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$serverid;
 	
-	$this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$dataArray);
-		
+	return $this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$dataArray);
+	
  }
  
  /**
@@ -228,7 +232,7 @@ require_once ("AppErrorLogHandler.php");
  function deleteServer($assetID){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
 	
-	$this->cmDataManager->deleteDataForContext($serverurl,$this->appContext->getAPIKey());
+	return $this->cmDataManager->deleteDataForContext($serverurl,$this->appContext->getAPIKey());
  	
  }
  
@@ -240,7 +244,9 @@ require_once ("AppErrorLogHandler.php");
  function checkServerExists($servername){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
  	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),"");
-	
+	if($deployArray === false){
+		return false;
+	}
 	//$deployArray = json_decode($deployArray);
 	$detailArray=$deployArray->data;
 
@@ -267,7 +273,8 @@ function checkConnect($dns,$sshport = 22) {
 
 	do {
 	    if (($dns == null) || ($dns == '')) {
-	        trigger_error("Invalid dns" . $dns, E_USER_ERROR);
+	        $this->logHelper->log(ERROR, "Invalid dns" . $dns);
+	        return false;
 	    }
 
 	    $this->logHelper->log(INFO, "Checking connectivity to: " . $dns);
@@ -280,7 +287,8 @@ function checkConnect($dns,$sshport = 22) {
 	} while ((!$connection) && (time() < $connectionTimeout));
 
 	if (!$connection) {
-	    trigger_error("Failed to connect to " . $dns, E_USER_ERROR);
+	    $this->logHelper->log(ERROR, "Failed to connect to " . $dns);
+	    return false;
 	}
 }
  

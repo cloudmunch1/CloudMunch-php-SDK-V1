@@ -10,10 +10,6 @@
  */
 namespace CloudMunch;
 
-use CloudMunch\cmDataManager;
-use CloudMunch\SSHConnection;
-use CloudMunch\Server;
-
 require_once ("AppErrorLogHandler.php");
 
 
@@ -33,7 +29,7 @@ class EnvironmentHelper{
 	public function __construct($appContext,$logHandler){
 		$this->appContext    = $appContext;
 		$this->logHelper     = $logHandler;
-		$this->cmDataManager = new cmDataManager($this->logHelper);
+		$this->cmDataManager = new cmDataManager($this->logHelper, $appContext);
 		$this->roleHelper    = new RoleHelper($appContext,$this->logHelper);
 	}	
 	
@@ -54,7 +50,8 @@ class EnvironmentHelper{
 		
 		$environmentArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), $querystring);
 		if ($environmentArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			$this->logHelper->log (DEBUG, "Could not retreive data from cloudmunch");
+			return false;
 		}
 		
 		$environmentdata = $environmentArray->data;	
@@ -80,12 +77,14 @@ class EnvironmentHelper{
 		$environmentArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), $querystring);
 		
 		if ($environmentArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			$this->logHelper->log (DEBUG, "Could not retreive data from cloudmunch");
+			return false;
 		}
 		
 		$environmentdata = $environmentArray->data;
 		if ($environmentdata == null) {
-			trigger_error ( "Environment does not exist", E_USER_ERROR );
+			$this->logHelper->log (DEBUG, "Environment does not exist");
+			return false;
 		}
 
 		return $environmentdata;
@@ -100,19 +99,26 @@ class EnvironmentHelper{
 	function  addEnvironment($environmentName, $environmentStatus, $environmentData)
 	{
 		if (empty($environmentName) || (empty($environmentStatus))) {
-			trigger_error ( "Environment name and status need to be provided", E_USER_ERROR );
+			 $this->logHelper->log ( DEBUG, "Environment name and status need to be provided");
+			 return false;
 		}
 		$statusconArray = array("success", "failed", "in-progress");
 		if (in_array ($environmentStatus, $statusconArray)) {
 			
 		} else {
-			trigger_error ( "Invalid status provided, valid values are success, failed and in-progress", E_USER_ERROR );
+			$this->logHelper->log ( DEBUG,"Invalid status provided, valid values are success, failed and in-progress");
+			return false;
 		}
 		
 		$environmentData[name]   = $environmentName;
 		$environmentData[status] = $environmentStatus;
 		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/environments";
 		$retArray  = $this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData);
+
+		if($retArray === false){
+			return false;
+		}
+
 		$retdata   = $retArray->data;
 		return $retdata;
 		
@@ -139,7 +145,7 @@ class EnvironmentHelper{
 	function  updateEnvironmentURL($environmentID, $environmentURL)
 	{
 		if(is_null($environmentURL) || !isset($environmentURL) || empty($environmentURL)){
-			trigger_error("Please environment URL is not provided to update environment details", E_USER_ERROR);
+			$this->logHelper->log(DEBUG, "Please environment URL is not provided to update environment details");
 		}
 		$data = array("application_url" => $environmentURL);
 		$this->updateEnvironment($environmentID, $data);
@@ -153,7 +159,8 @@ class EnvironmentHelper{
 	function  updateAsset($environmentID, $assetID, $roleID = null)
 	{	
 		if(is_null($assetID) || !isset($assetID) || empty($assetID)){
-			trigger_error("Asset id is not provided for updating asset details to environment", E_USER_ERROR);
+			$this->logHelper->log(DEBUG ,"Asset id is not provided for updating asset details to environment");
+			return false;
 		}
 
 		if(is_null($roleID) || empty($roleID)){
@@ -171,11 +178,26 @@ class EnvironmentHelper{
 				$assetArray = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => array($assetID))));
 			}
 		} else {
-			$assetArray = array('tiers' => array($roleID => array('id' => $roleID, 'name' => '{$tiers/{id}->name}', 'assets' => array($assetID))));		
+			$name = '{$tiers/' . $roleID . '->name}';
+			$assetArray = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $name, 'assets' => array($assetID))));		
 		}
 		$this->updateEnvironment($environmentID, $assetArray);
 	}
 
+	/**
+	 * 
+	 * @param String environmentID
+	 * @param array  key value pairs to be updated to environment details
+	 */
+	function updateVariables($environmentID, $variables)
+	{
+		if(is_null($environmentID)){
+			$this->logHelper->log (DEBUG, "Environment id value is needed for variables update on an environment");
+			return false;
+		}		
+		$variablesArray = array( 'variables' => $variables);
+		$this->updateEnvironment($environmentID, $variablesArray);
+	}
 
 	/**
 	 * 
@@ -189,7 +211,8 @@ class EnvironmentHelper{
 		if (in_array ( $status ,$statusconArray )) {
 		
 		} else {
-			trigger_error ( "Invalid status provided, valid values are success, failed and in-progress", E_USER_ERROR );
+			$this->logHelper->log (DEBUG, "Invalid status provided, valid values are success, failed and in-progress");
+			return false;
 		}
 		
 		$statusArray = array("status" => $status);
@@ -207,14 +230,15 @@ class EnvironmentHelper{
 		
 		$environmentArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(), "");
 		if ($environmentArray == false) {
-			trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+			$this->logHelper->log (DEBUG, "Could not retreive data from cloudmunch");
+			return false;
 		}
 
 		$environmentArray = json_decode(json_encode($environmentArray));
 		$environmentdata  = $environmentArray->data;
 
 		if ($environmentdata == null) {
-			$this->logHelper->log(INFO, "Environment does not exist");
+			$this->logHelper->log (INFO, "Environment does not exist");
 			return false;
 		}
 		return true;

@@ -33,7 +33,7 @@ class AssetHelper{
 	public function __construct($appContext,$logHandler){
 		$this->appContext = $appContext;
 		$this->logHelper=$logHandler;
-		$this->cmDataManager = new cmDataManager($this->logHelper);
+		$this->cmDataManager = new cmDataManager($this->logHelper, $this->appContext);
 	
 	}
 	/**
@@ -52,13 +52,15 @@ function getAsset($assetID,$filerdata){
 	
 	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),$querystring);
 	if($assetArray == false){
-		trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+		$this->logHelper->log ( ERROR, "Could not retreive data from cloudmunch");
+		return false;
 	}
 	
 	//$assetArray = json_decode($assetArray);
 	$assetdata=$assetArray->data;
 	if($assetdata == null){
-		trigger_error ( "Asset does not exist", E_USER_ERROR );
+		$this->logHelper->log ( ERROR, "Asset does not exist");
+		return null;
 	}
 	return $assetdata;
 }
@@ -72,13 +74,15 @@ function getAsset($assetID,$filerdata){
  */
 function  addAsset($assetname,$assettype,$assetStatus,$assetExternalRef,$assetData){
 	if(empty($assetname)||(empty($assettype))||(empty($assetStatus))){
-		trigger_error ( "Asset name ,status and type need to be provided", E_USER_ERROR );
+		$this->logHelper->log ( ERROR, "Asset name ,status and type need to be provided");
+		return false;
 	}
-	$statusconArray=array(STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL);
+	$statusconArray = array(STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL);
 	if(in_array ( $assetStatus ,$statusconArray )){
 		
 	}else{
-		trigger_error ( "Invalid status", E_USER_ERROR );
+		$this->logHelper->log ( ERROR, "Invalid status sent. Allowed values " . STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL);
+		return false;
 	}
 	
 	$assetData[name]=$assetname;
@@ -87,6 +91,11 @@ function  addAsset($assetname,$assettype,$assetStatus,$assetExternalRef,$assetDa
 	$assetData[external_reference]=$assetExternalRef;
 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/";
 	$retArray=$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$assetData);
+	
+	if($retArray===false){
+		return false;
+	}
+	
 	$retdata=$retArray->data;
 	return $retdata;
 	
@@ -124,7 +133,8 @@ function updateStatus($assetID,$status){
 	if(in_array ( $status ,$statusconArray )){
 	
 	}else{
-		trigger_error ( "Invalid status", E_USER_ERROR );
+		$this->logHelper->log (ERROR, "Invalid status");
+		return false;
 	}
 	$statusArray=array("status"=>$status);
 	$this->updateAsset($assetID,$statusArray);
@@ -140,7 +150,7 @@ function checkIfAssetExists($assetID){
 	
 	$assetArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),"");
 	if($assetArray == false){
-		trigger_error ( "Could not retreive data from cloudmunch", E_USER_ERROR );
+		return false;
 	}
 	
 	$assetArray = json_decode($assetArray);

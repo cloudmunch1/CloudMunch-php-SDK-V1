@@ -17,8 +17,9 @@ require_once ("AppErrorLogHandler.php");
 
 class cmDataManager{
 	private $logHelper=null;
-	public function __construct($logHandler) {
-		
+	private $appContext=null;
+	public function __construct($logHandler, $appContext) {
+		$this->appContext=$appContext;
 		$this->logHelper=$logHandler;
 	}
 	
@@ -51,8 +52,8 @@ function getDataForContext($url,$apikey,$querystring) {
 	}
 	
 	if($resultdecode->request->status !== "SUCCESS") {			
-		$this->logHelper->log(INFO, $resultdecode->request->message);
-		return $resultdecode;
+		$this->logHelper->log(DEBUG, $resultdecode->request->message);
+		return false;
 	}
 		
 	return $resultdecode; 
@@ -62,17 +63,26 @@ function getDataForContext($url,$apikey,$querystring) {
  * @return {"data":{"id":"SER2015101311095292382","name":"SER2015101311095292382"},"request":{"status":"SUCCESS"}}
  */
  function putDataForContext($url,$apikey,$data) {
+ 	// default data to be updated for all updates
+ 	$data[application_id] = $this->appContext->getProject();
+ 	$data[pipeline_id]    = $this->appContext->getJob();
+ 	$data[run_id]         = $this->appContext->getRunNumber();
+ 	$data[domain]         = $this->appContext->getDomainName();
+
 	$dat=array("data"=>$this->json_object($data));
 	$dat=$this->json_string($this->json_object($dat));
 	
 	$url=$url."?apikey=".$apikey;
+
 	$result=$this->do_curl($url, null, "POST", $dat, null);
 	
 	$result=$result["response"];
 	$result=json_decode($result);
 	
-     if(($result==null) ||($result->request->status !== "SUCCESS")      ){
-     	trigger_error ( "Not able to put data to cloudmunch", E_USER_ERROR );
+     if(($result==null) ||($result->request->status !== "SUCCESS")){
+     	$this->logHelper->log(ERROR, $result->request->message);
+     	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+     	return false;
      }
  
 	return $result;
@@ -86,7 +96,9 @@ function updateDataForContext($url,$apikey,$data){
 	$result=$result["response"];
 	$result=json_decode($result);
 	if(($result==null) ||($result->request->status!="SUCCESS")      ){
-		trigger_error ( "Not able to put data to cloudmunch", E_USER_ERROR );
+     	$this->logHelper->log(ERROR, $result->request->message);
+     	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+     	return false;
 	}
 	
 	return $result;
@@ -97,7 +109,9 @@ function deleteDataForContext($url,$apikey){
 	$result=$result["response"];
 	$result=json_decode($result);
 	if(($result==null) ||($result->request->status!="SUCCESS")      ){
-		trigger_error ( "Not able to put data to cloudmunch", E_USER_ERROR );
+     	$this->logHelper->log(ERROR, $result->request->message);
+     	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+     	return false;
 	}
 	
 	return $result;
@@ -446,7 +460,6 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 	$response["code"] = $responseCode;
 	$response["header"] = $headerSent;
 	$response["response"] = $results;
-
 	
 	return $response;
 }
