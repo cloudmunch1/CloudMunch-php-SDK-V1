@@ -133,7 +133,7 @@ class EnvironmentHelper{
 	{
 		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/environments/" . $environmentID;
 		
-		$this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData);
+		$this->cmDataManager->updateDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData);
 
 	}
 

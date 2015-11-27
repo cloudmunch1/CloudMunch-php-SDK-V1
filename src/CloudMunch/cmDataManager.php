@@ -90,19 +90,31 @@ function getDataForContext($url,$apikey,$querystring) {
 
 
 function updateDataForContext($url,$apikey,$data){
+ 	// default data to be updated for all updates
+ 	$data[application_id] = $this->appContext->getProject();
+ 	$data[pipeline_id]    = $this->appContext->getJob();
+ 	$data[run_id]         = $this->appContext->getRunNumber();
+ 	$data[domain]         = $this->appContext->getDomainName();
+
 	$dat=array("data"=>$this->json_object($data));
+	$dat=$this->json_string($this->json_object($dat));
+	
 	$url=$url."?apikey=".$apikey;
+
 	$result=$this->do_curl($url, null, "PATCH", $dat, null);
+	
 	$result=$result["response"];
 	$result=json_decode($result);
-	if(($result==null) ||($result->request->status!="SUCCESS")      ){
+	
+     if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
      	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
      	return false;
-	}
-	
+     }
+ 
 	return $result;
 }
+
 function deleteDataForContext($url,$apikey){
 	$url=$url."?apikey=".$apikey;
 	$result=$this->do_curl($url, null, "DELETE", null, null);
