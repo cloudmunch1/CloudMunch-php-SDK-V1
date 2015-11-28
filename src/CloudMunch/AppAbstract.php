@@ -341,7 +341,7 @@ abstract class AppAbstract {
 		}else{	
 		$this->cloudmunchService->deleteKeys ();
 		}
-		$this->logHandler->log ( INFO, "App completed successfully" );
+		$this->logHandler->log ( INFO, "App execution completed!" );
 		$date_b = new DateTime ();
 		$interval = date_diff ( $this->stime, $date_b );
 		$this->logHandler->log( INFO, "Total time taken: " . $interval->format ( '%h:%i:%s' ) );
@@ -376,8 +376,10 @@ abstract class AppAbstract {
 		}
 		
 	}
-	
-	
-	
+
+	public function __destruct(){
+		$this->performAppcompletion();
+	}
+		
 }
 ?>
