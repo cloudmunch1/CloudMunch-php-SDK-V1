@@ -154,13 +154,19 @@ class EnvironmentHelper{
 	/**
 	 * 
 	 * @param String Environment ID
-	 * @param JsonObject Environment Data
+	 * @param Array  AssetArray
+	 * @param String Role Id
 	 */
-	function  updateAsset($environmentID, $assetID, $roleID = null)
+	function  updateAsset($environmentID, $assetArray, $roleID = null)
 	{	
-		if(is_null($assetID) || !isset($assetID) || empty($assetID)){
-			$this->logHelper->log(DEBUG ,"Asset id is not provided for updating asset details to environment");
+		if(is_null($assetArray) || !isset($assetArray) || empty($assetArray)){
+			$this->logHelper->log(DEBUG ,"An array of asset ids are excpected for updating asset details to an environment");
 			return false;
+		}
+
+		if(!is_array($assetArray)){
+			$this->logHelper->log(DEBUG ,"An array of asset ids are expected for updating asset details to an environment");
+			return false;			
 		}
 
 		if(is_null($roleID) || empty($roleID)){
@@ -170,18 +176,18 @@ class EnvironmentHelper{
 			if(empty($defaultRoleDetails)){
 				$this->logHelper->log(INFO, "Role is not provided, creating a default role with name $this->defaultRole");
 				$new_role_details = $this->roleHelper->addRole($this->defaultRole);
-				$roleID          = $new_role_details->id;
-				$assetArray       = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => array($assetID))));
+				$roleID = $new_role_details->id;
+				$data   = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
 			} else {
 				$this->logHelper->log(INFO, "Role is not provided, linking with default role : $this->defaultRole");
 				$roleID = $defaultRoleDetails[0]->id;
-				$assetArray = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => array($assetID))));
+				$data   = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
 			}
 		} else {
 			$name = '{$tiers/' . $roleID . '->name}';
-			$assetArray = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $name, 'assets' => array($assetID))));		
+			$data = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $name, 'assets' => $assetArray)));		
 		}
-		$this->updateEnvironment($environmentID, $assetArray);
+		$this->updateEnvironment($environmentID, $data);
 	}
 
 	/**

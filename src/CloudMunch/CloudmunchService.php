@@ -180,6 +180,11 @@ class CloudmunchService {
 			return false;
 		}
 		
+		if(empty($keyString) || !(strlen($keyString) > 0)){
+			$this->logHelper->log(ERROR, "downloaded key content is empty, please re-upload key and try");
+			return false;
+		}
+
 		$filename = "keyfile" . rand ();
 		$this->appContext->getWorkSpaceLocation ();
 		// echo $filename;
