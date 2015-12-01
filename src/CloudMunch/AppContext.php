@@ -33,7 +33,18 @@ class AppContext {
 	private $runnumber="";
 	private $apikey="";
 	private $stepname="";
+	private $environmentId="";
 	
+	
+	
+	
+	function getEnvironment(){
+		return $this->environmentId;
+	}
+	
+	function setEnvironment($env){
+		 $this->environmentId=$env;
+	}
 	/**
 	 * @return Step name
 	 */

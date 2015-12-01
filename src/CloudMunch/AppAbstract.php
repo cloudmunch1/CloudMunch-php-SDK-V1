@@ -116,6 +116,11 @@ abstract class AppAbstract {
 			$projectId = $varParams->$arg6;
 			$appContext->setProject ( $projectId );
 			
+			$arg6 = '{environment_id}';
+			$envId = $varParams->$arg6;
+			$appContext->setEnvironment ( $envId );
+			
+			
 			$arg6 = '{ci_job_name}';
 			$jobname = $varParams->$arg6;
 			$appContext->setJob ( $jobname );
