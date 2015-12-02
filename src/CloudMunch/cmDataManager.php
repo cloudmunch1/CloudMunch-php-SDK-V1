@@ -62,22 +62,27 @@ function getDataForContext($url,$apikey,$querystring) {
 /**
  * @return {"data":{"id":"SER2015101311095292382","name":"SER2015101311095292382"},"request":{"status":"SUCCESS"}}
  */
- function putDataForContext($url,$apikey,$data) {
+ function putDataForContext($url,$apikey,$data,$comment = null) {
  	// default data to be updated for all updates
  	$data[application_id] = $this->appContext->getProject();
  	$data[pipeline_id]    = $this->appContext->getJob();
  	$data[run_id]         = $this->appContext->getRunNumber();
  	$data[domain]         = $this->appContext->getDomainName();
 
-	$dat=array("data"=>$this->json_object($data));
-	$dat=$this->json_string($this->json_object($dat));
+	$dat = array("data"=>$this->json_object($data));
 	
-	$url=$url."?apikey=".$apikey;
+	if (!is_null($comment) && strlen($comment) > 0) {
+		$dat[comment] = $comment;
+	}
+	
+	$dat = $this->json_string($this->json_object($dat));
+	$url = $url."?apikey=".$apikey;
+	echo "data : " . $dat;
 
-	$result=$this->do_curl($url, null, "POST", $dat, null);
+	$result = $this->do_curl($url, null, "POST", $dat, null);
 	
-	$result=$result["response"];
-	$result=json_decode($result);
+	$result = $result["response"];
+	$result = json_decode($result);
 	
      if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
@@ -89,7 +94,7 @@ function getDataForContext($url,$apikey,$querystring) {
 }
 
 
-function updateDataForContext($url,$apikey,$data){
+function updateDataForContext($url,$apikey,$data,$comment = null){
  	// default data to be updated for all updates
  	$data[application_id] = $this->appContext->getProject();
  	$data[pipeline_id]    = $this->appContext->getJob();
@@ -97,8 +102,14 @@ function updateDataForContext($url,$apikey,$data){
  	$data[domain]         = $this->appContext->getDomainName();
 
 	$dat=array("data"=>$this->json_object($data));
+
+	if (!is_null($comment) && strlen($comment) > 0) {
+		$dat[comment] = $comment;
+	}
+	
 	$dat=$this->json_string($this->json_object($dat));
 	
+	echo "data : " . $dat;
 	$url=$url."?apikey=".$apikey;
 
 	$result=$this->do_curl($url, null, "PATCH", $dat, null);

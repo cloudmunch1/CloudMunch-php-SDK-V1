@@ -15,6 +15,7 @@ use CloudMunch\SSHConnection;
 use CloudMunch\Server;
 use CloudMunch\ElasticBeanStalkServer;
 
+require_once ("CloudmunchConstants.php");
 require_once ("AppErrorLogHandler.php");
 
 

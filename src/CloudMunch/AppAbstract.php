@@ -11,6 +11,7 @@
 namespace CloudMunch;
 
 require_once ("AppErrorLogHandler.php");
+require_once ("CloudmunchConstants.php");
 
 use CloudMunch\Integrations\IntegrationHelper;
 use DateTime;

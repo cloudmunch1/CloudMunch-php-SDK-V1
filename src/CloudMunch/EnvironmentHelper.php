@@ -10,6 +10,7 @@
  */
 namespace CloudMunch;
 
+require_once ("CloudmunchConstants.php");
 require_once ("AppErrorLogHandler.php");
 
 
@@ -102,18 +103,21 @@ class EnvironmentHelper{
 			 $this->logHelper->log ( DEBUG, "Environment name and status need to be provided");
 			 return false;
 		}
-		$statusconArray = array("success", "failed", "in-progress");
+		$statusconArray = array(STATUS_CREATION_IN_PROGRESS, STATUS_RUNNING, STATUS_STOPPED, STATUS_STOPPED_WITH_ERRORS, STATUS_RUNNING_WITH_WARNINGS, STATUS_ACTION_IN_PROGRESS);;
 		if (in_array ($environmentStatus, $statusconArray)) {
 			
 		} else {
-			$this->logHelper->log ( DEBUG,"Invalid status provided, valid values are success, failed and in-progress");
+			$this->logHelper->log (DEBUG, "Invalid status provided, valid values are ".STATUS_CREATION_IN_PROGRESS.", ".STATUS_RUNNING.", ".STATUS_STOPPED.", ".STATUS_ACTION_IN_PROGRESS.", ".STATUS_RUNNING_WITH_WARNINGS." and ".STATUS_STOPPED_WITH_ERRORS);
 			return false;
 		}
 		
 		$environmentData[name]   = $environmentName;
 		$environmentData[status] = $environmentStatus;
+
+		$comment = "Adding environment with name $environmentName";
+		
 		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/environments";
-		$retArray  = $this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData);
+		$retArray  = $this->cmDataManager->putDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData, $comment);
 
 		if($retArray === false){
 			return false;
@@ -129,11 +133,11 @@ class EnvironmentHelper{
 	 * @param String Environment ID
 	 * @param JsonObject Environment Data
 	 */
-	function  updateEnvironment($environmentID, $environmentData)
+	function  updateEnvironment($environmentID, $environmentData, $comment = null)
 	{
 		$serverurl = $this->appContext->getMasterURL() . "/applications/" . $this->appContext->getProject() . "/environments/" . $environmentID;
-		
-		$this->cmDataManager->updateDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData);
+
+		$this->cmDataManager->updateDataForContext($serverurl, $this->appContext->getAPIKey(), $environmentData, $comment);
 
 	}
 
@@ -145,11 +149,33 @@ class EnvironmentHelper{
 	function  updateEnvironmentURL($environmentID, $environmentURL)
 	{
 		if(is_null($environmentURL) || !isset($environmentURL) || empty($environmentURL)){
-			$this->logHelper->log(DEBUG, "Please environment URL is not provided to update environment details");
+			$this->logHelper->log(DEBUG, "Environment URL is not provided to update environment details");
+			return false;
 		}
+
+		$comment = "Setting application URL";
 		$data = array("application_url" => $environmentURL);
-		$this->updateEnvironment($environmentID, $data);
+		$this->updateEnvironment($environmentID, $data, $comment);
 	}
+
+
+	/**
+	 * 
+	 * @param String Environment ID
+	 * @param URL    Environment Data
+	 */
+	function  updateEnvironmentBuildVersion($environmentID, $buildNumber)
+	{
+		if(is_null($buildNumber) || !isset($buildNumber) || empty($buildNumber)){
+			$this->logHelper->log(DEBUG, "Build number is not provided to update environment details");
+			return false;
+		}
+
+		$comment = "Setting application build version";
+		$data    = array("application" => array( "version" => "", "build" => $buildNumber));
+		$this->updateEnvironment($environmentID, $data, $comment);
+	}
+
 
 	/**
 	 * 
@@ -176,18 +202,19 @@ class EnvironmentHelper{
 			if(empty($defaultRoleDetails)){
 				$this->logHelper->log(INFO, "Role is not provided, creating a default role with name $this->defaultRole");
 				$new_role_details = $this->roleHelper->addRole($this->defaultRole);
-				$roleID = $new_role_details->id;
-				$data   = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
+				$roleID          = $new_role_details->id;
+				$data       = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
 			} else {
 				$this->logHelper->log(INFO, "Role is not provided, linking with default role : $this->defaultRole");
 				$roleID = $defaultRoleDetails[0]->id;
-				$data   = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
+				$data = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $this->defaultRole, 'assets' => $assetArray)));
 			}
 		} else {
 			$name = '{$tiers/' . $roleID . '->name}';
 			$data = array('tiers' => array($roleID => array('id' => $roleID, 'name' => $name, 'assets' => $assetArray)));		
 		}
-		$this->updateEnvironment($environmentID, $data);
+		$comment = "Updating role asset mapping";
+		$this->updateEnvironment($environmentID, $data, $comment);
 	}
 
 	/**
@@ -202,7 +229,8 @@ class EnvironmentHelper{
 			return false;
 		}		
 		$variablesArray = array( 'variables' => $variables);
-		$this->updateEnvironment($environmentID, $variablesArray);
+		$comment = "Updating variables";
+		$this->updateEnvironment($environmentID, $variablesArray, $comment);
 	}
 
 	/**
@@ -212,17 +240,18 @@ class EnvironmentHelper{
 	 */
 	function updateStatus($environmentID, $status)
 	{
-		$statusconArray = array("success", "in-progress", "failed");
+		$statusconArray = array(STATUS_CREATION_IN_PROGRESS, STATUS_RUNNING, STATUS_STOPPED, STATUS_STOPPED_WITH_ERRORS, STATUS_RUNNING_WITH_WARNINGS, STATUS_ACTION_IN_PROGRESS);
 
 		if (in_array ( $status ,$statusconArray )) {
 		
 		} else {
-			$this->logHelper->log (DEBUG, "Invalid status provided, valid values are success, failed and in-progress");
+			$this->logHelper->log (DEBUG, "Invalid status provided, valid values are ".STATUS_CREATION_IN_PROGRESS.", ".STATUS_RUNNING.", ".STATUS_STOPPED.", ".STATUS_ACTION_IN_PROGRESS.", ".STATUS_RUNNING_WITH_WARNINGS." and ".STATUS_STOPPED_WITH_ERRORS);
 			return false;
 		}
 		
 		$statusArray = array("status" => $status);
-		$this->updateEnvironment($environmentID, $statusArray);
+		$comment = "Updating status to $status";
+		$this->updateEnvironment($environmentID, $statusArray, $comment);
 	}
 
 	/**
