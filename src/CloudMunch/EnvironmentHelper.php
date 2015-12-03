@@ -123,7 +123,8 @@ class EnvironmentHelper{
 			return false;
 		}
 
-		$retdata   = $retArray->data;
+		$retdata = $retArray->data;
+		$this->appContext->setEnvironment($retdata->id);
 		return $retdata;
 		
 	}

@@ -247,8 +247,8 @@ abstract class AppAbstract {
 	 * @return EnvironmentHelper environment helper
 	 */
 	function getCloudmunchEnvironmentHelper() {
-		$envHelper = new EnvironmentHelper ( $this->appContext,$this->logHandler );
-		return $envHelper;
+		$this->envHelper = new EnvironmentHelper ( $this->appContext,$this->logHandler );
+		return $this->envHelper;
 	}
 
 	/**
@@ -377,6 +377,53 @@ abstract class AppAbstract {
 				$varlist = json_encode ( $varlist );
 				file_put_contents ( $fileloc, $varlist );
 			}
+			
+			$environment_id   = $this->getAppContext()->getEnvironment();
+
+	        // if current context is set with environment id, update the envirnonment as well
+    	    if (isset($environment_id) && strlen($environment_id) > 0) {
+	    	    $this->envHelper = $this->getCloudmunchEnvironmentHelper();
+				$variablesArray  = array ( $variablename => $variable );
+	    	    $this->envHelper->updateVariables($environment_id, $variablesArray);
+	    	}
+		} else {
+			echo "\n<{\"" . $variablename . "\":\"" . $variable . "\"}>" . PHP_EOL;
+		}
+		
+	}
+
+	/**
+	 * This method outputs variables from the plugin
+	 * 
+	 * @param
+	 *        	string variablename : Name of the variable to be output.
+	 * @param
+	 *        	string variable : Value of the variable.
+	 */
+	public function outputPipelineVariablesArray($variablesArray) {
+		if ($this->newVer) {
+			$fileloc = $this->appContext->getReportsLocation () . "/" . $this->appContext->getStepID () . ".out";
+			$varlist = file_get_contents ( $fileloc );
+			if (($varlist == null) || (strlen ( $varlist ) == 0)) {
+				$varlist = $variablesArray;
+				$varlist = json_encode ( $varlist );
+				file_put_contents ( $fileloc, $varlist );
+			} else {
+				$varlist = json_decode ( $varlist );
+				foreach ($variablesArray as $key => $value) {
+					$varlist->$key = $value;				
+				}
+				$varlist = json_encode ( $varlist );
+				file_put_contents ( $fileloc, $varlist );
+			}
+
+			$environment_id   = $this->getAppContext()->getEnvironment();
+
+			// if current context is set with environment id, update the envirnonment as well
+    	    if (isset($environment_id) && strlen($environment_id) > 0) {
+	    	    $this->envHelper = $this->getCloudmunchEnvironmentHelper();
+			    $this->envHelper->updateVariables($environment_id, $variablesArray);
+	    	}
 		} else {
 			echo "\n<{\"" . $variablename . "\":\"" . $variable . "\"}>" . PHP_EOL;
 		}
