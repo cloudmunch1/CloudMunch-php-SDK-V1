@@ -1,0 +1,6 @@
+{
+"require": 
+   {
+    "cloudmunch/php-sdk-v2":"dev-master"
+   }
+}

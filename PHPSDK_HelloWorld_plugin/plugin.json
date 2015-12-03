@@ -1,0 +1,36 @@
+{
+  "id": "PHPSDK_HelloWorld_plugin",
+  "name": "PHPSDK_HelloWorld_plugin,
+  "author": "rosmi@cloudmunch.com",
+  "version": "1",
+  "status": "enabled",
+  "tags": ["git","checkout"],
+  "inputs": {
+    "helloname": {
+      "type": "text",
+        "mandatory": "yes",
+      "display": "yes", 
+      "label": "Name",
+      "hint": "Give the name to be printed"    
+    }
+  },
+  "outputs": {
+    "param1": {
+      "name": "",
+      "format": ""
+    }
+  },
+  "execute": {
+    "main": "Hello/src/HelloDisplay.php",
+    "language": "PHP",
+    "options": "-debug"
+  },
+  "documentation": {
+    "description": "Hello World"
+  },
+  "_created_by": "rosmi@cloudmunch.com",
+  "_create_time": "2015-10-01 06:23:25.0474",
+  "_updated_by": "rosmi@cloudmunch.com",
+  "_update_time": ""
+}
+ 
