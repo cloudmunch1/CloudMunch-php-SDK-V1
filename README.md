@@ -227,7 +227,7 @@ $this->getLogHandler()->log(DEBUG, “Debug message”);
 ##Handling failure scenarios
  The plugin should exit with error on any failure scenarios.To enable this SDK provides a method to exit with error. The format to invoke the event is as below,
  ```
-    $message = “Error message”;
+    $message = "Error message”;
     trigger_error($message, E_USER_ERROR);
     ```
  
