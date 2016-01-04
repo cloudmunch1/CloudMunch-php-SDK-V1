@@ -9,6 +9,7 @@ class HelloDisplay extends AppAbstract
 	{
 		$inputparameters    = $processparameters['appInput'];
 		$name       = $inputparameters->helloname;
+		$this->getLogHandler()->log(INFO, 'Inside process');
 		echo "HELLO  ".$name;
 	}
 }
