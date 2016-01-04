@@ -21,7 +21,7 @@ class EnvironmentHelper {
 	private $cmDataManager = null;
 	private $logHelper = null;
 	private $roleHelper = null;
-	private $defaultRole = "Area_51";
+	private $defaultRole = "Default";
 	public function __construct($appContext, $logHandler) {
 		$this->appContext = $appContext;
 		$this->logHelper = $logHandler;

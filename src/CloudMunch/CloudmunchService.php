@@ -73,6 +73,104 @@ class CloudmunchService {
 	public function getDataFromContext($context) {
 		return $this->cmDataManager->getDataForContext ( $this->appContext->getMasterURL (), $context, $this->appContext->getDomainName () );
 	}
+
+	/**
+	 * 
+	 * @param array $contextArray associative array with key as context and value as its id
+	 * @param array $data Data to be updated
+	 * @return array data
+	 */
+	public function updateCustomContextData($contextArray, $data = null){
+		if (is_null($data)) {
+			$this->logHelper->log ( ERROR, "Data needs to be provided to update a context" );
+			return false;
+		}
+		echo "inside update context data";
+		var_dump($contextArray);
+
+		if (is_array($contextArray) && count($contextArray) > 0) {
+			$serverurl = $this->appContext->getMasterURL()."/applications/".$this->appContext->getProject();
+
+			foreach($contextArray as $key => $value) {
+				if(!is_null($value) && !empty($value)) {
+					$serverurl = $serverurl."/".$key."/".$value;
+				} else {
+					$serverurl = $serverurl."/".$key;
+					break;
+				}
+			}
+		} else {
+			$this->logHelper->log ( ERROR, "First parameter is expected to be an array with key value pairs" );
+			return false;
+		}
+
+		$retArray = $this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		
+		if($retArray === false){
+			return false;
+		}
+
+		var_dump($retArray);
+		return $retArray->data;
+	}
+
+	/**
+	 * 
+	 * @param array $contextArray associative array with key as context and its id as value
+	 * @param array $queryParams query paramters 
+	 * @return array data
+	 */
+	public function getCustomContextData($contextArray, $queryParams){
+		$querystring = "";
+		echo "inside get context data";
+		var_dump($contextArray);
+		if (is_array($contextArray) && count($contextArray) > 0){
+			$serverurl = $this->appContext->getMasterURL()."/applications/".$this->appContext->getProject();
+			
+			foreach ($contextArray as $key => $value) {
+				if( !is_null($value) && !empty($value))
+				{
+					$serverurl = $serverurl."/".$key."/".$value;
+				} else {
+					$serverurl = $serverurl."/".$key;
+					break;
+				}
+			}
+
+			if (is_array($queryParams) && ($querySize = count($queryParams)) > 0) {
+				$i = 1;
+
+				foreach ($queryParams as $key => $value) {
+					if($key === "filter"){
+						$value = urlencode(json_encode($value));
+
+					}
+
+					if($querystring !== ""){
+						$querystring = $key."=".$value."&".$querystring;
+					} else {
+						$querystring = $key."=".$value;
+					}
+				}
+			} 
+		} else {
+			$this->logHelper->log ( ERROR, "First parameter is expected to be an array with key value pairs" );
+			return false;
+		}
+		echo "\nserverurl : $serverurl\n";
+		echo "\nquerystring : $querystring\n";
+		$dataArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),$querystring);
+		
+		if($dataArray == false){
+			$this->logHelper->log ( ERROR, "Could not retreive data from cloudmunch" );
+			return false;
+		}
+		
+		var_dump($dataArray);
+
+		return $dataArray->data;
+		
+	}
 	
 	/**
 	 * 
@@ -202,42 +300,6 @@ class CloudmunchService {
 		foreach ( $this->keyArray as $file ) {
 			system ( "rm " . $file );
 		}
-	}
-	
-	/**
-	 * Method to update custom context.
-	 * 
-	 * @param string $context
-	 *        	: custom context name.
-	 * @param array $dataArray        	
-	 * @param string $id        	
-	 */
-	public function updateCustomContext($context, $dataArray, $id) {
-		return $this->cmDataManager->updateCustomContext ( $this->appContext->getMasterURL (), $context, $this->appContext->getDomainName (), $dataArray, $id );
-	}
-	
-	/**
-	 * This function accepts data in array format and converts to url string
-	 *
-	 * Example :
-	 *
-	 * array(
-	 * 'action' => 'listcustomcontext',
-	 * 'domain' => 'test',
-	 * 'project' => 'projectname',
-	 * 'customcontext' => 'projectname_stories',
-	 * 'fields' => 'sum(story_points)',
-	 * 'username' => 'CI',
-	 * 'group_by' => 'fix_versions',
-	 * 'count' => '*',
-	 * 'filter' => "{\"fix_versions\":\"10\"}"
-	 * );
-	 * 
-	 * @param $context Data
-	 *        	to be passed.
-	 */
-	public function getDataFromCustomContext($context) {
-		return $this->cmDataManager->getDataForCustomContext ( $this->appContext->getMasterURL (), $context );
 	}
 }
 ?>
