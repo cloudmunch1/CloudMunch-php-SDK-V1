@@ -207,8 +207,8 @@ if(($result === FALSE) && ($response_code != 100)) {
 	$this->logHelper->log(INFO,"result:" . $response_code);
 	trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
 }else{
-	$this->logHelper->log(INFO,"Updated:" . $result);
-	$this->logHelper->log(INFO,"result:" . $result);
+	//$this->logHelper->log(INFO,"Updated:" . $result);
+	//$this->logHelper->log(INFO,"result:" . $result);
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 
@@ -251,8 +251,8 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 		$this->logHelper->log(INFO,"result:" . $response_code);
 		trigger_error ( "Error in updating to cloudmunch", E_USER_ERROR );
 	}else{
-		$this->logHelper->log(INFO,"Updated:" . $result);
-		$this->logHelper->log(INFO,"result:" . $result);
+	//	$this->logHelper->log(INFO,"Updated:" . $result);
+	//	$this->logHelper->log(INFO,"result:" . $result);
 		//echo "\nresult:" . $result.PHP_EOL;
 	}
 
@@ -374,8 +374,8 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 if($result === FALSE) {
 	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
 }else{
-	$this->logHelper->log(INFO,"result:" . $result);
-	$this->logHelper->log(INFO, "Notification send");
+	//$this->logHelper->log(INFO,"result:" . $result);
+	//$this->logHelper->log(INFO, "Notification send");
 	//echo "\nresult:" . $result.PHP_EOL;
 }
 }
@@ -451,13 +451,13 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 		$responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$headerSent = curl_getinfo($ch, CURLINFO_HEADER_OUT);
 		$msg =  $results;
-		$this->logHelper->log("DEBUG", "Request to provider ended.: Details below");
-		$this->logHelper->log("DEBUG", str_pad("|-", 120, "-"));
+	//	$this->logHelper->log("DEBUG", "Request to provider ended.: Details below");
+	//	$this->logHelper->log("DEBUG", str_pad("|-", 120, "-"));
 	//	$this->logHelper->log("INFO", "|URL......... :" . $url);
 	//	$this->logHelper->log("INFO", "|Method...... :" . $requestType);
 	//	$this->logHelper->log("INFO", "|Header sent. :" . $headerSent);
 	//	$this->logHelper->log("INFO", "|Data sent... :" . $this->json_string($data));
-		$this->logHelper->log("DEBUG", "|Response code :" . $responseCode);
+	//	$this->logHelper->log("DEBUG", "|Response code :" . $responseCode);
 		$responseText = $this->startsWith($results, "<") ? $this->html2txt($results) : $results;
 	//	$this->logHelper->log("INFO", "|Response text :" . $responseText);
 	//	$this->logHelper->log("INFO", str_pad("-", 120, "-"));

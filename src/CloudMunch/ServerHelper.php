@@ -44,7 +44,7 @@ require_once ("AppErrorLogHandler.php");
   */
  function getServer($servername){
  	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
- 	$this->logHelper->log(DEBUG,"serverurl from serverhelper:" . $serverurl);
+ //	$this->logHelper->log(DEBUG,"serverurl from serverhelper:" . $serverurl);
  	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),null);
 	if($deployArray === false){
 		return false;
