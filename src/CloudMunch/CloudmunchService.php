@@ -298,7 +298,9 @@ class CloudmunchService {
 	 */
 	public function deleteKeys() {
 		foreach ( $this->keyArray as $file ) {
-			system ( "rm " . $file );
+			if(file_exists($file)){
+				system ( "rm " . $file );
+			}
 		}
 	}
 }
