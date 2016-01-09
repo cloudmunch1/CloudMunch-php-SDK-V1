@@ -54,7 +54,7 @@ class InsightHelper
                             'datastores' => $dataStoreID,
                             'extracts'   => $extractID,
                         );
-        var_dump($queryOptions);
+      //  var_dump($queryOptions);
         return $this->cmService->getCustomContextData($params, $queryOptions);
     }
 
@@ -296,8 +296,8 @@ class InsightHelper
                                );
         $response = $this->getInsightDataStoreExtracts($insightID, $dataStoreID, $queryOptions);
 
-        echo "RESPONSE --------------> \n";
-        var_dump ($response);
+      //  echo "RESPONSE --------------> \n";
+     //   var_dump ($response);
 
         if ($response) {
             return $response[0]->id;
@@ -440,7 +440,7 @@ class InsightHelper
     public function createInsightDataStoreExtract($insightID, $dataStoreID, $extractName)
     {
         // /insights/{insight_id}/datastores/{datastore_id}
-        echo "\ncreateInsightDataStoreExtract : $insightID, $dataStoreID, $extractName";
+      //  echo "\ncreateInsightDataStoreExtract : $insightID, $dataStoreID, $extractName";
         if (is_null($insightID) || empty($insightID) || is_null($dataStoreID) || empty($dataStoreID) || is_null($extractName) || empty($extractName)) {
             $this->logHelper->log('DEBUG', 'Insight id, datastore id and extract name is needed to create an extract');
 
@@ -586,7 +586,7 @@ class InsightHelper
             $data =  array('name' => $cardName);
 
             $response = $this->cmService->updateCustomContextData($params, $data);
-            echo "RESPONSE AFTER CARD CREATION ....."; print_r($response);
+         //   echo "RESPONSE AFTER CARD CREATION ....."; print_r($response);
 
             if ($response) {
                 return $response->id;
@@ -627,8 +627,8 @@ class InsightHelper
             $data =  array('name' => $reportName);
 
             $response = $this->cmService->updateCustomContextData($params, $data);
-            echo "RESPONSE IS :";
-            var_dump($response);
+           // echo "RESPONSE IS :";
+           // var_dump($response);
             if ($response) {
                 return $response->id;
             } else {

@@ -85,8 +85,8 @@ class CloudmunchService {
 			$this->logHelper->log ( ERROR, "Data needs to be provided to update a context" );
 			return false;
 		}
-		echo "inside update context data";
-		var_dump($contextArray);
+		//echo "inside update context data";
+		//var_dump($contextArray);
 
 		if (is_array($contextArray) && count($contextArray) > 0) {
 			$serverurl = $this->appContext->getMasterURL()."/applications/".$this->appContext->getProject();
@@ -110,7 +110,7 @@ class CloudmunchService {
 			return false;
 		}
 
-		var_dump($retArray);
+		//var_dump($retArray);
 		return $retArray->data;
 	}
 
@@ -122,8 +122,8 @@ class CloudmunchService {
 	 */
 	public function getCustomContextData($contextArray, $queryParams){
 		$querystring = "";
-		echo "inside get context data";
-		var_dump($contextArray);
+		//echo "inside get context data";
+		//var_dump($contextArray);
 		if (is_array($contextArray) && count($contextArray) > 0){
 			$serverurl = $this->appContext->getMasterURL()."/applications/".$this->appContext->getProject();
 			
@@ -157,8 +157,8 @@ class CloudmunchService {
 			$this->logHelper->log ( ERROR, "First parameter is expected to be an array with key value pairs" );
 			return false;
 		}
-		echo "\nserverurl : $serverurl\n";
-		echo "\nquerystring : $querystring\n";
+		//echo "\nserverurl : $serverurl\n";
+		//echo "\nquerystring : $querystring\n";
 		$dataArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),$querystring);
 		
 		if($dataArray == false){
@@ -166,7 +166,7 @@ class CloudmunchService {
 			return false;
 		}
 		
-		var_dump($dataArray);
+		//var_dump($dataArray);
 
 		return $dataArray->data;
 		

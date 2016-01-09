@@ -77,7 +77,7 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	$dat = $this->json_string($this->json_object($dat));
 	$url = $url."?apikey=".$apikey;
-	echo "data : " . $dat;
+	//echo "data : " . $dat;
 
 	$result = $this->do_curl($url, null, "POST", $dat, null);
 	
@@ -109,7 +109,7 @@ function updateDataForContext($url,$apikey,$data,$comment = null){
 	
 	$dat=$this->json_string($this->json_object($dat));
 	
-	echo "data : " . $dat;
+	//echo "data : " . $dat;
 	$url=$url."?apikey=".$apikey;
 
 	$result=$this->do_curl($url, null, "PATCH", $dat, null);
@@ -222,7 +222,7 @@ function updateCustomContext($masterurl, $context, $domain, $serverArray,$id) {
 	$data = "data=" . json_encode($serverArray["data"]);
 	$url = $masterurl . "/cbdata.php?action=updatecustomcontext&customcontext=" . $context . "&username=CI&mode=update&domain=" . $domain."&id=".$id;
 	//$url=urlencode($url);
-	echo "\nurl is:" . $url.PHP_EOL;
+	//echo "\nurl is:" . $url.PHP_EOL;
 
 	$options = array (
 			CURLOPT_HEADER => 0,
