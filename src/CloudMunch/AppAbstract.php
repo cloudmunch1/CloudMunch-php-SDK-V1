@@ -251,6 +251,18 @@ abstract class AppAbstract {
 		return $this->envHelper;
 	}
 
+
+	/**
+	 * This method gives reference to EnvironmentHelper,this helper class has all the methods to get/set data on
+	 * assets registered with cloudmunch.
+	 * 
+	 * @return EnvironmentHelper environment helper
+	 */
+	function getCloudmunchInsightHelper() {
+		$this->insightHelper = new InsightHelper ( $this->appContext,$this->logHandler );
+		return $this->insightHelper;
+	}
+
 	/**
 	 * This method gives reference to RoleHelper,this helper class has all the methods to get/set data on
 	 * assets registered with cloudmunch.
@@ -362,6 +374,11 @@ abstract class AppAbstract {
 	 *        	string variable : Value of the variable.
 	 */
 	public function outputPipelineVariables($variablename, $variable) {
+		// check if variable key is surrounded by {} and add if not present
+		if (!preg_match('/^{.*}$/', $variablename)) {
+			$variablename = "{".$variablename."}";
+		}
+
 		if ($this->newVer) {
 			$fileloc = $this->appContext->getReportsLocation () . "/" . $this->appContext->getStepID () . ".out";
 			$varlist = file_get_contents ( $fileloc );
@@ -381,7 +398,7 @@ abstract class AppAbstract {
 			$environment_id   = $this->getAppContext()->getEnvironment();
 
 	        // if current context is set with environment id, update the envirnonment as well
-    	    if (isset($environment_id) && strlen($environment_id) > 0) {
+    	    if (isset($environment_id) && strlen($environment_id) > 0 && !preg_match('/^{environment_id}$/', $environment_id)) {
 	    	    $this->envHelper = $this->getCloudmunchEnvironmentHelper();
 				$variablesArray  = array ( $variablename => $variable );
 	    	    $this->envHelper->updateVariables($environment_id, $variablesArray);
@@ -401,6 +418,16 @@ abstract class AppAbstract {
 	 *        	string variable : Value of the variable.
 	 */
 	public function outputPipelineVariablesArray($variablesArray) {
+		// check if variable key is surrounded by {} and add if not present
+		$tmp = array();
+		foreach ($variablesArray as $key => $value) {
+			if (!preg_match('/^{.+}$/', $key)) {
+				$key = "{".$key."}";
+			}
+		    $tmp[$key] = $value;			 			
+		}
+		$variablesArray = $tmp;
+
 		if ($this->newVer) {
 			$fileloc = $this->appContext->getReportsLocation () . "/" . $this->appContext->getStepID () . ".out";
 			$varlist = file_get_contents ( $fileloc );
@@ -420,7 +447,7 @@ abstract class AppAbstract {
 			$environment_id   = $this->getAppContext()->getEnvironment();
 
 			// if current context is set with environment id, update the envirnonment as well
-    	    if (isset($environment_id) && strlen($environment_id) > 0) {
+    	    if (isset($environment_id) && strlen($environment_id) > 0 && !preg_match('/^{environment_id}$/', $environment_id)) {
 	    	    $this->envHelper = $this->getCloudmunchEnvironmentHelper();
 			    $this->envHelper->updateVariables($environment_id, $variablesArray);
 	    	}
