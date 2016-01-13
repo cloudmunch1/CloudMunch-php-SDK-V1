@@ -23,7 +23,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
 	}
 
 	date_default_timezone_set('UTC');
-	$date = date(DATE_ATOM);
+	$date =date('Y-m-d H:i:s');
 	switch ($errno) {
 		case E_RECOVERABLE_ERROR :
 		case E_COMPILE_ERROR :

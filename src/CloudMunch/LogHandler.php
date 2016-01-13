@@ -13,7 +13,7 @@ class LogHandler{
 	function log($msgNo, $msg) {
 		try{
 			date_default_timezone_set('UTC');
-			$date = date(DATE_ATOM);
+			$date =date('Y-m-d H:i:s');
 		} catch (Exception $se) {
 		}
 		$stepname=$this->appContext->getStepName();
