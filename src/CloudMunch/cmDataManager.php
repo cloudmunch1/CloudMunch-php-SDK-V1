@@ -380,6 +380,51 @@ if($result === FALSE) {
 }
 }
 
+function downloadFile($url, $apikey, $source, $destination = null){
+    set_time_limit(0);
+    $url = $url . "?apikey=" . $apikey . "&file=/" . $source . "&mode=DOWNLOAD";
+    $workspace = $this->appContext->getWorkSpaceLocation();
+    $tempFile  = $workspace . "/" . "file" . rand ();
+
+    //This is the file where we save the information
+    $fp = fopen ($tempFile, 'w+');
+    //Here is the file we are downloading, replace spaces with %20
+    $ch = curl_init(str_replace(" ","%20",$url));
+    curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+    // write curl response to file
+    curl_setopt($ch, CURLOPT_FILE, $fp); 
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    // get curl response
+    $result = curl_exec($ch);
+    $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    if (!$result || ($responseCode !== 200)) {
+        $this->logHelper->log("INFO", "Unable to download files!");
+        curl_close($ch);
+        fclose($fp);
+        system("rm " . $tempFile. "&> /dev/null");
+        return false;
+    }
+
+    curl_close($ch);
+    fclose($fp);
+
+    $returnValue = 0;
+    if (!is_null($destination)) {
+        $destination = $workspace . "/" . $destination;
+        system("mkdir -p " . $destination . " &> /dev/null");
+        system("unzip -o " . $tempFile . " -d " . $destination . " &> /dev/null", $returnValue);
+    } else {
+        system("unzip -o " . $tempFile . " &> /dev/null", $returnValue);
+    }
+
+    system("rm " . $tempFile . " &> /dev/null");
+    if ($returnValue !== 0 && $returnValue !== 1){
+        return false;
+    }
+    return true;
+}
+
 function do_curl($url, $headers = null, $requestType = null, $data = null, $curlOpts = null)
 {
 	if (!is_scalar($url)) {
