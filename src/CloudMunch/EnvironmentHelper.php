@@ -21,7 +21,7 @@ class EnvironmentHelper {
 	private $cmDataManager = null;
 	private $logHelper = null;
 	private $roleHelper = null;
-	private $defaultRole = "Default";
+	private $defaultRole = "default";
 	public function __construct($appContext, $logHandler) {
 		$this->appContext = $appContext;
 		$this->logHelper = $logHandler;
@@ -227,7 +227,21 @@ class EnvironmentHelper {
 				);
 			} else {
 				$this->logHelper->log ( INFO, "Role is not provided, linking with default role : $this->defaultRole" );
-				$roleID = $defaultRoleDetails [0]->id;
+				$rolefound=false;
+				foreach($defaultRoleDetails as $defaultRoleDetail){
+					if($defaultRoleDetail->name == $this->defaultRole){
+						$roleID = $defaultRoleDetail->id;
+						$this->logHelper->log ( INFO,"Got the default role id");
+						$rolefound=true;
+					}
+				}
+				if(!$rolefound){
+					$this->logHelper->log ( INFO,"Creating default role");
+					$new_role_details = $this->roleHelper->addRole ( $this->defaultRole );
+					$roleID = $new_role_details->id;
+				}
+				$this->logHelper->log ( INFO,"Role id is:".$roleID);
+			//	$roleID = $defaultRoleDetails [0]->id;
 				$data = array (
 						'tiers' => array (
 								$roleID => array (
