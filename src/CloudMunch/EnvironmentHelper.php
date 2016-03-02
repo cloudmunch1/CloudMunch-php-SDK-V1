@@ -22,6 +22,7 @@ class EnvironmentHelper {
 	private $logHelper = null;
 	private $roleHelper = null;
 	private $defaultRole = "default";
+	private $defaultStage = "dev";
 	public function __construct($appContext, $logHandler) {
 		$this->appContext = $appContext;
 		$this->logHelper = $logHandler;
@@ -100,6 +101,12 @@ class EnvironmentHelper {
 			$this->logHelper->log ( DEBUG, "Environment name and status need to be provided" );
 			return false;
 		}
+
+		$stage = $this->setStage($environmentData);
+		
+		$environmentData[stage] = [];
+		$environmentData[stage] = $stage;
+
 		$statusconArray = array (
 				STATUS_CREATION_IN_PROGRESS,
 				STATUS_RUNNING,
@@ -132,6 +139,60 @@ class EnvironmentHelper {
 		return $retdata;
 	}
 	
+	/**
+	 *
+	 * @param	array  data
+	 */
+
+	function setStage($data){
+		if (is_array($data) && isset($data['stage']) && !empty($data['stage']) && !is_null($data['stage'])) {
+			// return the same if stage is already set with required format
+			if (is_array($data['stage']) || is_object($data['stage'])){
+				return $data['stage'];
+			} else {
+				$stage = $this->getStage("id", $data['stage']);
+				// if name is set as value
+				if (is_null($stage)) {
+					$stage = $this->getStage("name", $data['stage']);
+				}
+				// set to default stage
+				if (is_null($stage)) {
+					$stage = $this->getStage("name", $this->defaultStage);
+				}
+				return $stage;
+			}
+		} else {
+			// set to default stage
+			return $this->getStage("name", $this->defaultStage);
+		}
+	}
+
+	/**
+	 *
+	 * @param
+	 *			String  key
+	 * @param
+	 *        	String 	value
+	 */
+
+    function getStage($key, $value){
+        $url    = $this->appContext->getMasterURL () . "/applications/" . $this->appContext->getProject () . "/stages" ;
+        $data   = $this->cmDataManager->getDataForContext($url, $this->appContext->getAPIKey(), null);
+        $stages = $data->data;
+        $stageDetails = [];
+        if ($stages) {
+            foreach ($stages as $keyName => $stage) {
+                if ($stage->$key == $value) {
+                    $stageDetails[name] = isset($stage->name)?$stage->name:"";
+                    $stageDetails[id]   = isset($stage->id)?$stage->id:"";
+	                return $stageDetails;
+                }
+            }
+        } else {
+        	return false;
+        }
+    }
+
 	/**
 	 *
 	 * @param
