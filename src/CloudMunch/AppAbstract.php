@@ -154,6 +154,10 @@ abstract class AppAbstract {
 			$apikey = $varParams->$arg;
 			$appContext->setAPIKey ( $apikey );
 			
+			$arg="target";
+			$buildno = $varParams->$arg->run_id;
+			$appContext->setMainbuildnumber($buildno);
+			
 			$this->setAppContext ( $appContext );
 		} else {
 			$jsonParams = json_decode ( $jsonParameters );

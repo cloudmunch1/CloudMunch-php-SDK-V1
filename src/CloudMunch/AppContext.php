@@ -34,9 +34,16 @@ class AppContext {
 	private $apikey="";
 	private $stepname="";
 	private $environmentId="";
+	private $mainbuildnumber="";
 	
 	
+	function getMainbuildnumber(){
+		return $this->mainbuildnumber;
+	}
 	
+	function setMainbuildnumber($number){
+		 $this->mainbuildnumber=$number;
+	}
 	
 	function getEnvironment(){
 		return $this->environmentId;
