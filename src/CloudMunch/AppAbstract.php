@@ -381,7 +381,10 @@ abstract class AppAbstract {
 
 		if ($this->newVer) {
 			$fileloc = $this->appContext->getReportsLocation () . "/" . $this->appContext->getStepID () . ".out";
+			$varlist == null;
+			if(file_exists($fileloc)){
 			$varlist = file_get_contents ( $fileloc );
+			}
 			if (($varlist == null) || (strlen ( $varlist ) == 0)) {
 				$varlist = array (
 						$variablename => $variable 
@@ -430,7 +433,10 @@ abstract class AppAbstract {
 
 		if ($this->newVer) {
 			$fileloc = $this->appContext->getReportsLocation () . "/" . $this->appContext->getStepID () . ".out";
+			$varlist == null;
+			if(file_exists($fileloc)){
 			$varlist = file_get_contents ( $fileloc );
+			}
 			if (($varlist == null) || (strlen ( $varlist ) == 0)) {
 				$varlist = $variablesArray;
 				$varlist = json_encode ( $varlist );
