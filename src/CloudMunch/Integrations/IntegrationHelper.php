@@ -35,7 +35,7 @@ namespace CloudMunch\Integrations;
 		$cloudproviders=json_decode($cloudproviders);
 		$arg1 = 'providername';
 		$provname = $jsonParams-> $arg1;
-		$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
+		//$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
 	    $provtype="providerType";
 	    
 	   
@@ -60,7 +60,7 @@ namespace CloudMunch\Integrations;
  	function getIntegration($jsonParams,$integrations){
  		$arg1 = 'providername';
  		$provname = $jsonParams-> $arg1;
- 		$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
+ 	//	$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
  		
  		
  		if(($provname != null) && (strlen(trim($provname))>0)){
