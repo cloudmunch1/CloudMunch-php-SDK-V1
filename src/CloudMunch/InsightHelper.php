@@ -463,7 +463,7 @@ class InsightHelper
 
             $data =  array('name' => $extractName);
 
-            $response = $this->cmService->updateCustomContextData($params, $data);
+            $response = $this->cmService->updateCustomContextData($params, $data, "POST");
 
             if ($response) {
                 return $response->id;
@@ -503,7 +503,7 @@ class InsightHelper
                             );
             $data =  array('name' => $dataStoretName);
 
-            $response = $this->cmService->updateCustomContextData($params, $data);
+            $response = $this->cmService->updateCustomContextData($params, $data, "POST");
 
             if ($response) {
                 return $response->id;
@@ -542,7 +542,7 @@ class InsightHelper
 
             $data =  array('name' => $insightName);
 
-            $response = $this->cmService->updateCustomContextData($params, $data);
+            $response = $this->cmService->updateCustomContextData($params, $data, "POST");
 
             if ($response) {
                 return $response->id;
@@ -585,7 +585,7 @@ class InsightHelper
                             );
             $data =  array('name' => $cardName);
 
-            $response = $this->cmService->updateCustomContextData($params, $data);
+            $response = $this->cmService->updateCustomContextData($params, $data, "POST");
          //   echo "RESPONSE AFTER CARD CREATION ....."; print_r($response);
 
             if ($response) {
@@ -626,7 +626,7 @@ class InsightHelper
                             );
             $data =  array('name' => $reportName);
 
-            $response = $this->cmService->updateCustomContextData($params, $data);
+            $response = $this->cmService->updateCustomContextData($params, $data, "POST");
            // echo "RESPONSE IS :";
            // var_dump($response);
             if ($response) {

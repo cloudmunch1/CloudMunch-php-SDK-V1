@@ -86,7 +86,7 @@ function getDataForContext($url,$apikey,$querystring) {
 	
      if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
-     	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+     	$this->logHelper->log (ERROR,"Not able to post data to cloudmunch");
      	return false;
      }
  
@@ -119,7 +119,7 @@ function updateDataForContext($url,$apikey,$data,$comment = null){
 	
      if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
-     	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+     	$this->logHelper->log (ERROR,"Not able to patch data to cloudmunch");
      	return false;
      }
  

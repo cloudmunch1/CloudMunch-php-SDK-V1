@@ -80,7 +80,7 @@ class CloudmunchService {
 	 * @param array $data Data to be updated
 	 * @return array data
 	 */
-	public function updateCustomContextData($contextArray, $data = null){
+	public function updateCustomContextData($contextArray, $data = null, $method = "PATCH"){
 		if (is_null($data)) {
 			$this->logHelper->log ( ERROR, "Data needs to be provided to update a context" );
 			return false;
@@ -104,7 +104,11 @@ class CloudmunchService {
 			return false;
 		}
 
-		$retArray = $this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		if ($method === "POST") {
+			$retArray = $this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		} else {
+			$retArray = $this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$data);
+		}
 		
 		if($retArray === false){
 			return false;
