@@ -72,7 +72,7 @@ function downloadGSkey($url,$apikey,$querystring){
 	$result = $this->do_curl($url, null, "GET", null, null);
 	
 	$result = $result["response"];
-	$this->logHelper->log(DEBUG, "result:".$result);
+	//$this->logHelper->log(DEBUG, "result:".$result);
 	if (($result == null)) {
 		return false;
 	}
