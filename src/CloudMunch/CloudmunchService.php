@@ -264,6 +264,39 @@ class CloudmunchService {
 		return $result;
 	}
 	
+	/**
+	 *
+	 * @param string $filekey name of the key field
+	 * @param string $context context of the key
+	 * @param string $contextid id of the context
+	 * @return string location of the downloaded file
+	 */
+	public function downloadGCRKeys($filekey, $context, $contextid) {
+		$url = $serverurl = $this->appContext->getMasterURL () . "/applications/" . $this->appContext->getProject () . "/" . $context . "/" . $contextid;
+		$querystring = "file=" . $filekey;
+	
+		$keyString = $this->cmDataManager->downloadGSkey ( $url, $this->appContext->getAPIKey (), $querystring );
+		
+		
+		
+		if($keyString === false){
+			return false;
+		}
+	
+		if(empty($keyString) || !(strlen($keyString) > 0)){
+			$this->logHelper->log(ERROR, "downloaded key content is empty, please re-upload key and try");
+			return false;
+		}
+	
+		$filename = "keyfile" . rand ();
+		$this->appContext->getWorkSpaceLocation ();
+		// echo $filename;
+		$file = $this->appContext->getWorkSpaceLocation () . "/" . $filename;
+		file_put_contents ( $file, $keyString );
+		system ( 'chmod 400 ' . $file, $retval );
+		array_push ( $this->keyArray, $file );
+		return $file;
+	}
 	
 	/**
 	 * 
@@ -277,7 +310,9 @@ class CloudmunchService {
 		$querystring = "file=" . $filekey;
 		
 		$keyString = $this->cmDataManager->getDataForContext ( $url, $this->appContext->getAPIKey (), $querystring );
-
+        if(!is_string($keyString)){
+        	$keyString=json_encode($keyString);
+        }
 		if($keyString === false){
 			return false;
 		}
