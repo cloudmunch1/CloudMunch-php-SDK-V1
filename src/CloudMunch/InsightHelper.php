@@ -33,6 +33,23 @@ class InsightHelper
     }
 
     /**
+     * @param string $type  type of resource
+     *
+     * @return array resources available with given type
+     */
+    public function getResources($type)
+    {
+        if($type) {
+            $contextArray = array('resources' => '');
+            $queryOptions = array('filter' => array('type' => $type), 'fields' => '*');
+            return $this->cmService->getCustomContextData($contextArray, $queryOptions);
+        } else {
+            $this->logHelper->log('DEBUG', 'Resource type is not provided!');
+            return false;
+        }
+    }
+
+    /**
      * @param string $insightID
      * @param string $dataStoreID
      * @param array  $queryOptions associative array with key as query key and query value as value
@@ -50,7 +67,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'   => $insightID,
+                            'resources'   => $insightID,
                             'datastores' => $dataStoreID,
                             'extracts'   => $extractID,
                         );
@@ -76,7 +93,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'   => $insightID,
+                            'resources'   => $insightID,
                             'datastores' => $dataStoreID,
                         );
 
@@ -94,7 +111,7 @@ class InsightHelper
         // /insights/{insight_id}/datastores/{datastore_id}
 
         $params =  array(
-                            'insights' => $insightID,
+                            'resources' => $insightID,
                         );
 
         return $this->cmService->getCustomContextData($params, $queryOptions);
@@ -119,7 +136,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'        => $insightID,
+                            'resources'        => $insightID,
                             'insight_reports' => $reportID,
                             'insight_cards'   => $cardID,
                         );
@@ -145,7 +162,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'        => $insightID,
+                            'resources'        => $insightID,
                             'insight_reports' => $reportID,
                         );
 
@@ -168,7 +185,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'   => $insightID,
+                            'resources'   => $insightID,
                             'datastores' => $dataStoreID,
                             'extracts'   => $extractID,
                         );
@@ -193,7 +210,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'   => $insightID,
+                            'resources'   => $insightID,
                             'datastores' => $dataStoreID,
                         );
 
@@ -216,7 +233,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights' => $insightID,
+                            'resources' => $insightID,
                         );
 
         return $this->cmService->updateCustomContextData($params, $data);
@@ -240,7 +257,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights' => $insightID,
+                            'resources' => $insightID,
                             'insight_reports' => $reportID,
                             'insight_cards' => $cardID,
                         );
@@ -265,7 +282,7 @@ class InsightHelper
         }
 
         $params =  array(
-                            'insights'        => $insightID,
+                            'resources'        => $insightID,
                             'insight_reports' => $reportID,
                         );
 
@@ -456,7 +473,7 @@ class InsightHelper
             $this->logHelper->log('INFO', 'Attempting creation of extract with name '.$extractName.'...');
 
             $params =  array(
-                                'insights'   => $insightID,
+                                'resources'   => $insightID,
                                 'datastores' => $dataStoreID,
                                 'extracts'   => '',
                             );
@@ -498,7 +515,7 @@ class InsightHelper
             $this->logHelper->log('INFO', 'Attempting creation of datastore with name '.$dataStoretName.'...');
 
             $params = array(
-                                'insights'   => $insightID,
+                                'resources'   => $insightID,
                                 'datastores' => '',
                             );
             $data =  array('name' => $dataStoretName);
@@ -537,7 +554,7 @@ class InsightHelper
             $this->logHelper->log('INFO', 'Attempting creation of insight with name '.$insightName.'...');
 
             $params =  array(
-                                'insights' => '',
+                                'resources' => '',
                             );
 
             $data =  array('name' => $insightName);
@@ -579,7 +596,7 @@ class InsightHelper
             $this->logHelper->log('INFO', 'Attempting creation of report card with name '.$cardName.'...');
 
             $params =  array(
-                                'insights' => $insightID,
+                                'resources' => $insightID,
                                 'insight_reports' => $reportID,
                                 'insight_cards' => '',
                             );
@@ -621,7 +638,7 @@ class InsightHelper
             $this->logHelper->log('INFO', 'Attempting creation of report with name '.$reportName.'...');
 
             $params =  array(
-                                'insights' => $insightID,
+                                'resources' => $insightID,
                                 'insight_reports' => '',
                             );
             $data =  array('name' => $reportName);
