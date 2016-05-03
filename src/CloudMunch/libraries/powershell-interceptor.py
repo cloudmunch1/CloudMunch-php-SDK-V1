@@ -23,7 +23,6 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
     raise
 
-print "Parameters received : "+args.jsoninput[0]
 try:
     data = json.loads(str(args.jsoninput[0]))
 except ValueError:
