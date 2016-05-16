@@ -36,11 +36,11 @@ function getDataForContext($url,$apikey,$querystring) {
 	}else{
 		$url = $url . "?apikey=" . $apikey . "&" . $querystring;
 	}
-	$this->logHelper->log(DEBUG, $url);
+	//$this->logHelper->log(DEBUG, $url);
 	$result = $this->do_curl($url, null, "GET", null, null);
 	
 	$result = $result["response"];
-	$this->logHelper->log(DEBUG, "result:".$result);
+	//$this->logHelper->log(DEBUG, "result:".$result);
 	if (($result == null)) {
 		return false;
 	}
@@ -54,7 +54,7 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	
 	if((!empty($resultdecode->request->status))&&($resultdecode->request->status !== "SUCCESS")) {			
-		$this->logHelper->log(DEBUG, $resultdecode->request->message);
+		//$this->logHelper->log(DEBUG, $resultdecode->request->message);
 		return false;
 	}
 		
@@ -68,7 +68,7 @@ function downloadGSkey($url,$apikey,$querystring){
 	}else{
 		$url = $url . "?apikey=" . $apikey . "&" . $querystring;
 	}
-	$this->logHelper->log(DEBUG, $url);
+	//$this->logHelper->log(DEBUG, $url);
 	$result = $this->do_curl($url, null, "GET", null, null);
 	
 	$result = $result["response"];
