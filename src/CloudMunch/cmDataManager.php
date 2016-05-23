@@ -418,7 +418,7 @@ function downloadFile($url, $apikey, $source, $destination = null){
     $result = curl_exec($ch);
     $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    if (!$result || ($responseCode !== 200)) {
+    if ($responseCode !== 200) {
         $this->logHelper->log("INFO", "Unable to download files!");
         curl_close($ch);
         fclose($fp);
