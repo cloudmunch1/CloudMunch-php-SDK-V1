@@ -87,7 +87,6 @@ function downloadGSkey($url,$apikey,$querystring){
  	$data[application_id] = $this->appContext->getProject();
  	$data[pipeline_id]    = $this->appContext->getJob();
  	$data[run_id]         = $this->appContext->getRunNumber();
- 	$data[domain]         = $this->appContext->getDomainName();
 
 	$dat = array("data"=>$this->json_object($data));
 	
@@ -119,7 +118,6 @@ function updateDataForContext($url,$apikey,$data,$comment = null){
  	$data[application_id] = $this->appContext->getProject();
  	$data[pipeline_id]    = $this->appContext->getJob();
  	$data[run_id]         = $this->appContext->getRunNumber();
- 	$data[domain]         = $this->appContext->getDomainName();
 
 	$dat=array("data"=>$this->json_object($data));
 
