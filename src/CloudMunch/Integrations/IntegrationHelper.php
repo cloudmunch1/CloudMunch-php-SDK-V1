@@ -60,6 +60,7 @@ namespace CloudMunch\Integrations;
  	function getIntegration($jsonParams,$integrations){
  		$arg1 = 'providername';
  		$provname = $jsonParams-> $arg1;
+ 		
  	//	$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
  		
  		
@@ -79,6 +80,24 @@ namespace CloudMunch\Integrations;
  			return null;
  		}
  		
+ 	}
+ 	
+ 	function getIntegrationData($cloudmunchservice,$jsonParams){
+ 		$arg1 = 'providername';
+ 		$provname = $jsonParams-> $arg1;
+ 		$contextArray = array('integrations' => $provname);
+ 		$data = $this->validateResponse($cloudmunchservice->getCustomContextData($contextArray, null), 'integrations');
+ 		if ($data->configuration){
+ 			$regfields= $data->configuration;
+ 			$integrationdetails=array();
+ 			foreach ($regfields as $key=>$value){
+ 				$integrationdetails[$key]=$value;
+ 		
+ 			}
+ 			return $integrationdetails;
+ 		} else {
+ 			return null;
+ 		}
  	}
  }
 ?>
