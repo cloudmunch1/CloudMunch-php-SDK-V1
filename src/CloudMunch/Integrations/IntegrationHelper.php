@@ -86,7 +86,7 @@ namespace CloudMunch\Integrations;
  		$arg1 = 'providername';
  		$provname = $jsonParams-> $arg1;
  		$contextArray = array('integrations' => $provname);
- 		$data = $this->validateResponse($cloudmunchservice->getCustomContextData($contextArray, null), 'integrations');
+ 		$data = $cloudmunchservice->getCustomContextData($contextArray, null);
  		if ($data->configuration){
  			$regfields= $data->configuration;
  			$integrationdetails=array();
