@@ -155,7 +155,11 @@ abstract class AppAbstract {
 			$appContext->setAPIKey ( $apikey );
 			
 			$arg="target";
+			if(empty($varParams->$arg)){
+				$buildno = $run;
+			}else{
 			$buildno = $varParams->$arg->run_id;
+			}
 			$appContext->setMainbuildnumber($buildno);
 			
 			$this->setAppContext ( $appContext );
