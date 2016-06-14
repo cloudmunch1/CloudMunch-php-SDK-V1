@@ -32,6 +32,34 @@ class CloudmunchService {
 		$this->cmDataManager = new cmDataManager ($this->logHelper, $this->appContext);
 	}
 	/**
+	 * This method is to send notification on a selected channel
+	 * 
+	 * @param string $message
+	 *        	: Notification message.
+ 	 * @param string $channel
+	 *        	: Channel to send notification to
+	 * @param string $to 
+	 *        	: To addresses to be notified
+	 * @param string $subject - optional
+	 *        	: Subject of the notification (incase of mail)
+	 * @param string $attachment - optional
+	 *        	: Attachment of the notification
+	 */
+	public function sendNotification($message, $channel, $to, $subject = "", $attachment = "") {
+		if(empty($message) || empty($channel) || empty($to) ){
+			$this->logHelper->log ( ERROR, "Message, channel and a to list is mandatory to send a notification" );
+			return false;
+		}
+		$dataarray = array (
+			"body" => $message,
+			"channel" => $channel,
+			"to" => $to,
+			"subject" => $subject,
+			"attachment" => $attachment 
+		);
+		return $this->cmDataManager->sendNotification ( $this->appContext->getMasterURL (), $this->appContext->getAPIKey(), $dataarray );
+	}
+	/**
 	 * This method is to invoke notification on cloudmunch.
 	 * 
 	 * @param string $message
