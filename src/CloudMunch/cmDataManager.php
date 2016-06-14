@@ -348,6 +348,41 @@ function updateServerDetailsList($dnsName = "", $instanceId = "", $amiName = "",
 
 	$deployUtil->writeToDeployFile($deployArray);
 }
+
+/**
+ * This method is to invoke notify api on cloudmunch.
+ * 
+ * @param string $serverurl
+ *        	: base server url 
+ * @param string $apikey
+ *        	: Api key.
+ * @param string $contextarray
+ *        	: an array of components of the notification
+ * @return boolean 
+ * 			: success status 
+ */
+
+function sendNotification($serverurl, $apikey, $contextarray){
+	if(empty($serverurl) || empty($apikey) || empty($apikey)) {
+		return false; 
+	}
+
+	$data = $this->json_string($contextarray);
+
+    $url = $serverurl."?action=notify&apikey=".$apikey;
+	$result = $this->do_curl($url, null, "POST", $data, null);
+	
+	$result = $result["response"];
+	$result = json_decode($result);
+    if(($result==null) ||($result->request->status !== "SUCCESS")){
+     	$this->logHelper->log(ERROR, $result->request->message);
+     	$this->logHelper->log (ERROR,"Not able to send notification to cloudmunch");
+     	return false;
+    }else{
+    	return true;
+    }
+}
+
 function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	//	$url =$masterurl . "/cbdata.php?context=".$context."&username=CI&mode=update&domain=".$domain."&data=".$serverArray;
 	// global $curl_verbose;
@@ -389,15 +424,14 @@ function notifyUsersInCloudmunch($serverurl,$message,$contextarray,$domain){
 	curl_setopt_array($post, $options);
 	$result = curl_exec($post);
 	$response_code = curl_getinfo($post, CURLINFO_HTTP_CODE);
-if($result === FALSE) {
-	trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
-}else{
-	//$this->logHelper->log(INFO,"result:" . $result);
-	//$this->logHelper->log(INFO, "Notification send");
-	//echo "\nresult:" . $result.PHP_EOL;
+	if($result === FALSE) {
+		trigger_error ( "Error in notifying to cloudmunch", E_USER_ERROR );
+	}else{
+		//$this->logHelper->log(INFO,"result:" . $result);
+		//$this->logHelper->log(INFO, "Notification send");
+		//echo "\nresult:" . $result.PHP_EOL;
+	}
 }
-}
-
 function downloadFile($url, $apikey, $source, $destination = null){
     set_time_limit(0);
     $url = $url . "?apikey=" . $apikey . "&file=/" . $source . "&mode=DOWNLOAD";
