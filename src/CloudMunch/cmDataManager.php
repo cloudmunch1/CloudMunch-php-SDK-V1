@@ -408,7 +408,7 @@ function downloadFile($url, $apikey, $source, $destination = null){
     $fp = fopen ($tempFile, 'w+');
     //Here is the file we are downloading, replace spaces with %20
     $ch = curl_init(str_replace(" ","%20",$url));
-    curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 600);
     // write curl response to file
     curl_setopt($ch, CURLOPT_FILE, $fp); 
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
