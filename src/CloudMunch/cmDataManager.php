@@ -53,7 +53,11 @@ function getDataForContext($url,$apikey,$querystring) {
 	
 	
 	
-	if((!empty($resultdecode->request->status))&&($resultdecode->request->status !== "SUCCESS")) {			
+	if((!empty($resultdecode->request->status))&&($resultdecode->request->status !== "SUCCESS")) {
+     	$this->logHelper->log(ERROR, $result->request->message);
+		if($resultdecode->request->request_id) {
+			$this->logHelper->log(ERROR,"Request ID : " . $resultdecode->request->request_id);
+		}
 		//$this->logHelper->log(DEBUG, $resultdecode->request->message);
 		return false;
 	}
@@ -106,6 +110,9 @@ function downloadGSkey($url,$apikey,$querystring){
      if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
      	$this->logHelper->log (ERROR,"Not able to post data to cloudmunch");
+		if($resultdecode->request->request_id) {
+			$this->logHelper->log(ERROR,"Request ID : " . $resultdecode->request->request_id);
+		}
      	return false;
      }
  
@@ -138,6 +145,9 @@ function updateDataForContext($url,$apikey,$data,$comment = null){
      if(($result==null) ||($result->request->status !== "SUCCESS")){
      	$this->logHelper->log(ERROR, $result->request->message);
      	$this->logHelper->log (ERROR,"Not able to patch data to cloudmunch");
+		if($resultdecode->request->request_id) {
+			$this->logHelper->log(ERROR,"Request ID : " . $resultdecode->request->request_id);
+		}
      	return false;
      }
  
@@ -152,6 +162,9 @@ function deleteDataForContext($url,$apikey){
 	if(($result==null) ||($result->request->status!="SUCCESS")      ){
      	$this->logHelper->log(ERROR, $result->request->message);
      	$this->logHelper->log (ERROR,"Not able to put data to cloudmunch");
+		if($resultdecode->request->request_id) {
+			$this->logHelper->log(ERROR,"Request ID : " . $resultdecode->request->request_id);
+		}
      	return false;
 	}
 	
