@@ -346,13 +346,14 @@ abstract class AppAbstract {
 		
 		$integrationHelper = new IntegrationHelper ($this->logHandler);
 		if ($this->newVer) {
-			//$integrationService = $integrationHelper->getIntegration ( $this->getParameterObject (), $this->appContext->getIntegrations () );
-			$this->logHandler->log ( INFO, "Getting integration" );
-			$integrationService = $integrationHelper->getIntegrationData ($this->getCloudmunchService(), $this->getParameterObject ());
-		    if(is_null($integrationService)){
-		    	$this->logHandler->log ( INFO, "Retrieving integration failed" );
-		    }
-		
+			if($this->getParameterObject()->providername){
+				//$integrationService = $integrationHelper->getIntegration ( $this->getParameterObject (), $this->appContext->getIntegrations () );
+				$this->logHandler->log ( INFO, "Getting integration" );
+				$integrationService = $integrationHelper->getIntegrationData ($this->getCloudmunchService(), $this->getParameterObject ());
+			    if(is_null($integrationService)){
+			    	$this->logHandler->log ( INFO, "Retrieving integration failed" );
+			    }
+			}		
 		} else {
 			$integrationService = $integrationHelper->getService ( $this->getParameterObject () );
 		}
