@@ -516,7 +516,9 @@ function do_curl($url, $headers = null, $requestType = null, $data = null, $curl
 	if (!empty($requestType)) {
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $requestType);
 		if (!empty($data)) {
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->json_string($data));
+			// strip html tags and post
+			curl_setopt($ch, CURLOPT_POSTFIELDS, preg_replace('@<[\/\!]*?[^<>]*?>@si', '', $this->json_string($data)));
+//			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->json_string($data));
 		}
 	}
 
