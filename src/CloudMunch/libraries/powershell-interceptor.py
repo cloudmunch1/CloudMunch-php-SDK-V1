@@ -5,9 +5,11 @@ import json
 from pprint import pprint
 import winrm
 import sys
+from winrm.protocol import Protocol
+import base64
 
 try:
-    # parse and validate parameters to the interceptor 
+    # parse and validate parameters to the interceptor
     parser = argparse.ArgumentParser(description='PS Interceptor')
     parser.add_argument('-jsoninput', metavar='jsoninput parameter', nargs='+',
                        help='parameters for the PS interceptor')
@@ -22,7 +24,6 @@ except ValueError:
 except:
     print "Unexpected error:", sys.exc_info()[0]
     raise
-
 try:
     data = json.loads(str(args.jsoninput[0]))
 except ValueError:
@@ -32,7 +33,7 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
     raise
 
-if not 'servername' in data.keys() or not 'serverusername' in data.keys() or not 'password' in data.keys() or (not data["servername"]) or (not data["serverusername"]) or (not data["password"]): 
+if not 'servername' in data.keys() or not 'serverusername' in data.keys() or not 'password' in data.keys() or (not data["servername"]) or (not data["serverusername"]) or (not data["password"]):
     print "App received insufficient parameters for execution. Exiting.."
     sys.exit(100)
 if 'command' in data.keys():
@@ -52,9 +53,11 @@ for key,value in data.iteritems():
                     script = script.replace("$$"+itemlist[0], itemlist[1])
         else:
             script = script.replace("$$"+key, value)
-script = "\n"+script
+script = script.replace("\n", ";")
 
 if "\\" in data["serverusername"]:
+    #script = base64.b64encode(script.encode("utf-16"))
+    cmd = "powershell -ExecutionPolicy Bypass -command %s" % (script)
     p = Protocol(
         endpoint='http://'+data["servername"]+':5985/wsman',
         transport='ntlm',
@@ -62,17 +65,18 @@ if "\\" in data["serverusername"]:
         password=data["password"],
         server_cert_validation='ignore')
     shell_id = p.open_shell()
-    command_id = p.run_command(shell_id, script)
+    command_id = p.run_command(shell_id, cmd)
     std_out, std_err, status_code = p.get_command_output(shell_id, command_id)
     p.cleanup_command(shell_id, command_id)
     p.close_shell(shell_id)
 else:
+    script = "\n"+script
     s = winrm.Session(data["servername"], auth=(data["serverusername"], data["password"]))
     try:
         r = s.run_ps(script)
-    except winrm.exceptions.UnauthorizedError:
-        print "Could not authenticate on the remote server:", sys.exc_info()[1]
-        sys.exit(100)
+#    except winrm.exceptions.UnauthorizedError:
+#        print "Could not authenticate on the remote server:", sys.exc_info()[1]
+#        sys.exit(100)
     except:
         print "Unexpected error"
         raise
@@ -85,3 +89,5 @@ print std_out
 
 if std_err:
     print std_err
+
+sys.exit(status_code)
