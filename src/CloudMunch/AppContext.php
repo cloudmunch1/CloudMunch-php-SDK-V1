@@ -35,6 +35,7 @@ class AppContext {
 	private $stepname="";
 	private $environmentId="";
 	private $mainbuildnumber="";
+	private $tierid="";
 	
 	
 	function getMainbuildnumber(){
@@ -51,6 +52,13 @@ class AppContext {
 	
 	function setEnvironment($env){
 		 $this->environmentId=$env;
+	}
+	function getTier(){
+		return $this->tierid;
+	}
+	
+	function setTier($tier){
+		$this->tierid=$tier;
 	}
 	/**
 	 * @return Step name
