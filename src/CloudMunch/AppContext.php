@@ -36,7 +36,15 @@ class AppContext {
 	private $environmentId="";
 	private $mainbuildnumber="";
 	private $tierid="";
+	private $logLevel="INFO";
 	
+	function getLogLevel(){
+		return $this->logLevel;
+	}
+	
+	function setLogLevel($logLevel = "INFO"){
+		 $this->logLevel = $logLevel;
+	}
 	
 	function getMainbuildnumber(){
 		return $this->mainbuildnumber;
