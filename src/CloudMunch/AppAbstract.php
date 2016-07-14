@@ -136,6 +136,12 @@ abstract class AppAbstract {
 			$appContext->setStepID ( $stepDetails->id );
 			$appContext->setStepName($stepDetails->name);
 			$appContext->setReportsLocation ( $stepDetails->reports_location );
+
+			if($stepDetails->log_level){
+				$appContext->setLogLevel($stepDetails->log_level);	
+			} else {
+				$appContext->setLogLevel("INFO");	
+			}
 			
 			$stepid=$stepDetails->id;
 				
