@@ -8,6 +8,7 @@
  *  Rosmi Chandy rosmi@cloudmunch.com
  */
 namespace CloudMunch;
+use CloudMunch\NotificationHandler;
 require_once ("AppErrorLogHandler.php");
 
 
@@ -18,9 +19,15 @@ require_once ("AppErrorLogHandler.php");
 class cmDataManager{
 	private $logHelper=null;
 	private $appContext=null;
-	public function __construct($logHandler, $appContext) {
-		$this->appContext=$appContext;
-		$this->logHelper=$logHandler;
+	public  $notificationHandler;
+
+	public function __construct($logHandler, $appContext, $notificationHandler = null) {
+		$this->appContext = $appContext;
+		$this->logHelper  = $logHandler;
+		if(is_null($notificationHandler)){
+			$notificationHandler = new NotificationHandler ($this->logHelper, $this->appContext, $this);
+		}
+		$this->notificationHandler = $notificationHandler;
 	}
 	
 	/**
@@ -51,14 +58,12 @@ function getDataForContext($url,$apikey,$querystring) {
 		return $result;
 	}
 	
-	
-	
 	if((!empty($resultdecode->request->status))&&($resultdecode->request->status !== "SUCCESS")) {
-     	$this->logHelper->log(ERROR, $result->request->message);
+     	$this->logHelper->log(ERROR, $resultdecode->request->message);
 		if($resultdecode->request->request_id) {
 			$this->logHelper->log(ERROR,"Request ID : " . $resultdecode->request->request_id);
+			$this->notificationHandler->sendSlackNotification($resultdecode->request->message.". Request ID : ".$resultdecode->request->request_id);
 		}
-		//$this->logHelper->log(DEBUG, $resultdecode->request->message);
 		return false;
 	}
 		
@@ -112,6 +117,7 @@ function downloadGSkey($url,$apikey,$querystring){
      	$this->logHelper->log (ERROR,"Not able to post data to cloudmunch");
 		if($result->request->request_id) {
 			$this->logHelper->log(ERROR,"Request ID : " . $result->request->request_id);
+			$this->notificationHandler->sendSlackNotification($result->request->message.". Request ID : ".$result->request->request_id);
 		}
      	return false;
      }
@@ -147,6 +153,7 @@ function updateDataForContext($url,$apikey,$data,$comment = null){
      	$this->logHelper->log (ERROR,"Not able to patch data to cloudmunch");
 		if($result->request->request_id) {
 			$this->logHelper->log(ERROR,"Request ID : " . $result->request->request_id);
+			$this->notificationHandler->sendSlackNotification($result->request->message.". Request ID : ".$result->request->request_id);
 		}
      	return false;
      }

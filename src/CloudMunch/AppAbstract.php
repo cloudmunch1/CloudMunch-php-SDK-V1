@@ -325,6 +325,16 @@ abstract class AppAbstract {
 	}
 	
 	/**
+	 * This method returns reference to NotificationHandler,this helper class has methods to notify external communication tools
+	 * 
+	 * @return NotificationHandler
+	 */
+	function getNotificationHandler() {
+		$notificationHandler = new NotificationHandler ( $this->appContext ,$this->logHandler);
+		return $notificationHandler;
+	}
+
+	/**
 	 * Set parameter object.
 	 * 
 	 * @param
