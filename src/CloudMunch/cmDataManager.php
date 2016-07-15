@@ -19,7 +19,7 @@ require_once ("AppErrorLogHandler.php");
 class cmDataManager{
 	private $logHelper=null;
 	private $appContext=null;
-	public  $notificationHandler;
+	private $notificationHandler;
 
 	public function __construct($logHandler, $appContext, $notificationHandler = null) {
 		$this->appContext = $appContext;
