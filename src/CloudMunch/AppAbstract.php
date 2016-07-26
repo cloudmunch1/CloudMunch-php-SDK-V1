@@ -145,16 +145,9 @@ abstract class AppAbstract {
 			
 			$stepid=$stepDetails->id;
 				
-			$arg="steps";
-			$mapperData = $varParams->mapper;
-			$mapperData = json_decode ( $mapperData );
-			$stepData=$mapperData->$arg;
+			
 				
-			$data=$stepData->$stepid;
-				
-			$params=$data->parameters;
-				
-			$apptier=$params->__applicable_tier;
+			$apptier=$stepDetails->tier;
 			$appContext->setTier($apptier);
 			$arg = "{archive_location}";
 			$archiveloc = $varParams->$arg;
