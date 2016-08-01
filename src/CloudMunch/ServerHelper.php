@@ -15,6 +15,7 @@ use CloudMunch\SSHConnection;
 use CloudMunch\Server;
 use CloudMunch\ElasticBeanStalkServer;
 
+require_once ("CloudmunchConstants.php");
 require_once ("AppErrorLogHandler.php");
 
 
@@ -25,12 +26,14 @@ require_once ("AppErrorLogHandler.php");
   */
  class ServerHelper{
 
- private $appContext=null;
+ private $appContext    = null;
  private $cmDataManager = null;
+ private $logHelper     = null;
 
-  public function __construct($appContext){
+  public function __construct($appContext,$logHandler){
   	$this->appContext = $appContext;
-  	$this->cmDataManager = new cmDataManager();
+  	$this->logHelper  = $logHandler;
+	$this->cmDataManager = new cmDataManager($this->logHelper, $this->appContext);
  	
  }
  
@@ -40,78 +43,96 @@ require_once ("AppErrorLogHandler.php");
   * @return \CloudMunch\Server
   */
  function getServer($servername){
- 	
- 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
-	
-	$deployArray = json_decode($deployArray);
-	
-	if ($deployArray == null) {
-		$deployArray = array ();
+ 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
+ //	$this->logHelper->log(DEBUG,"serverurl from serverhelper:" . $serverurl);
+ 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),null);
+	if($deployArray === false){
+		return false;
 	}
+	//$deployArray = json_decode($deployArray);
+	$detailArray=$deployArray->data;
+	
+	
 
-	foreach ($deployArray as $i => $detailArray) {
-		if (array_key_exists($servername, $detailArray)) {
+	
 			if(isset($detailArray->$servername->assetname) && $detailArray->$servername->assetname == "ElasticBeanStalk"){
 				$server=new ElasticBeanStalkServer();
 			}else{
 			$server=new Server();
 			}
-			$server->setServerName($servername);
-			$server->setDescription($detailArray->$servername->description);
-			$server->setDNS($detailArray->$servername->dnsName);
-			$server->setDomainName($detailArray->$servername->domainName);
-			$server->setCI($detailArray->$servername->CI);
-			$server->setDeploymentStatus($detailArray->$servername->deploymentStatus);
-			$server->setInstanceId($detailArray->$servername->instanceId);
-			$server->setImageID($detailArray->$servername->amiID);
-			$server->setLauncheduser($detailArray->$servername->username);
-			$server->setBuild($detailArray->$servername->build);
-			$server->setAppName($detailArray->$servername->appName);
-			$server->setDeployTempLoc($detailArray->$servername->deployTempLoc);
-			$server->setBuildLocation($detailArray->$servername->buildLoc);
-			$server->setPrivateKeyLoc($detailArray->$servername->privateKeyLoc);
-			$server->setPublicKeyLoc($detailArray->$servername->publicKeyLoc);
-			$server->setLoginUser($detailArray->$servername->loginUser);
-			$server->setServerType($detailArray->$servername->serverType);
-			$server->setAssettype($detailArray->$servername->assettype);
-			$server->setStatus($detailArray->$servername->status);
-			$server->setStarttime($detailArray->$servername->starttime);
-			$server->setProvider($detailArray->$servername->provider);
-			$server->setRegion($detailArray->$servername->region);
-			$server->setCmserver($detailArray->$servername->cmserver);
-			$server->setAssetname($detailArray->$servername->assetname);
-			$server->setInstancesize($detailArray->$servername->instancesize);
-			$server->setPassword($detailArray->$servername->password);
-			$server->setSSHPort($detailArray->$servername->sshport);
-			$server->setTier($detailArray->$servername->tier);
+			$server->setServerName($detailArray->id);
+			$server->setDescription($detailArray->description);
+			$server->setDNS($detailArray->dnsName);
+			$server->setDomainName($detailArray->domainName);
+			$server->setCI($detailArray->CI);
+			$server->setDeploymentStatus($detailArray->deploymentStatus);
+			$server->setInstanceId($detailArray->instanceId);
+			$server->setImageID($detailArray->amiID);
+			$server->setLauncheduser($detailArray->username);
+			$server->setBuild($detailArray->build);
+			$server->setAppName($detailArray->appName);
+			$server->setDeployTempLoc($detailArray->deployTempLoc);
+			$server->setBuildLocation($detailArray->buildLoc);
+			$server->setPrivateKeyLoc($detailArray->privateKeyLoc);
+			$server->setPublicKeyLoc($detailArray->publicKeyLoc);
+			$server->setLoginUser($detailArray->loginUser);
+			$server->setServerType($detailArray->serverType);
+			$server->setAssettype($detailArray->assettype);
+			$server->setStatus($detailArray->status);
+			$server->setStarttime($detailArray->starttime);
+			$server->setProvider($detailArray->provider);
+			$server->setRegion($detailArray->region);
+			$server->setCmserver($detailArray->cmserver);
+			$server->setAssetname($detailArray->assetname);
+			$server->setInstancesize($detailArray->instancesize);
+			$server->setPassword($detailArray->password);
+			$server->setSSHPort($detailArray->sshport);
+			$server->setTier($detailArray->tier);
 			if($server instanceof ElasticBeanStalkServer){
-				$server->setEnvironmentName($detailArray->$servername->environmentName);
-				$server->setBucketName($detailArray->$servername->bucketName);
-				$server->setApplicationName($detailArray->$servername->applicationName);
-				$server->setTemplateName($detailArray->$servername->templateName);
+				$server->setEnvironmentName($detailArray->environmentName);
+				$server->setBucketName($detailArray->bucketName);
+				$server->setApplicationName($detailArray->applicationName);
+				$server->setTemplateName($detailArray->templateName);
 				
 				
 			}
 			return $server;
-		}
-	}
-	trigger_error("Server does not exist", E_USER_ERROR);
+		
+//	trigger_error("Server does not exist", E_USER_ERROR);
 	
  }
+ 
+ 
   /**
    * This method can be used to add or register a server to cloudmunch data .
    * @param \CloudMunch\Server $server
    * @param string $docker
    */
- function addServer($server,$docker = false){
+ function addServer($server,$serverstatus,$docker = false){
  	
-	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
-	//echo $deployArray;
+ 	if(empty($assetStatus)){
+ 		$this->logHelper->log (ERROR, "Server status need to be provided");
+ 		return false;
+ 	}
+ 	$statusconArray=array(STATUS_RUNNING,STATUS_STOPPED,STATUS_NIL);
+ 	if(in_array ( $serverstatus ,$statusconArray )){
+ 	
+ 	}else{
+ 		$this->logHelper->log (ERROR, "Invalid status");
+ 		return false;
+ 	}
+ 	
+ 	
+	/* $serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
+ 	loghandler(INFO,"serverurl from serverhelper:" . $serverurl);
+ 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey());
+	
 	$deployArray = json_decode($deployArray);
+	$detailArray=$deployArray->data;
 	
 	if ($deployArray == null) {
 		$deployArray = array ();
-	}
+	} */
 	$dataArray = array (
 	
 		"description" => $server->getDescription(),
@@ -131,13 +152,13 @@ require_once ("AppErrorLogHandler.php");
 		"publicKeyLoc" => $server->getPublicKeyLoc(),
 		"loginUser" => $server->getLoginUser(),
 		"serverType" => $server->getServerType(),
-		"assettype" => $server->getAssettype(),
+		"type" => "server",
 		"status" => $server->getStatus(),
 		"starttime" => $server->getStarttime(),
 		"provider" => $server->getProvider(),
 		"region" => $server->getRegion(),
 		"cmserver" => $server->getCmserver(),
-		"assetname" => $server->getAssetname(),
+		"name" => $server->getServerName(),
 		"instancesize" => $server->getInstancesize(),
 		"password" => $server->getPassword(),
 		"sshport" => $server->getSSHPort(),
@@ -149,37 +170,22 @@ require_once ("AppErrorLogHandler.php");
 		$dataArray[environmentName]=$server->getEnvironmentName();
 		$dataArray[bucketName]=$server->getBucketName();	
 	}
-
+	$dataArray[status]=$serverstatus;
 	if($docker){
 		$dataArray[projects] = array ($server->getAppName() => array ("buildNo" => $server->getBuild()));
 	}
 
 
-	$detailArray[$server->getServerName()] = $dataArray;
-	array_push($deployArray, $detailArray);
-	
-	$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
+	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/";
+ 	$this->cmDataManager->putDataForContext($serverurl,$this->appContext->getAPIKey(),$dataArray);
  }
  
  /**
   * This method is used to update server data.
   * @param \CloudMunch\Server $server
   */
- function updateServer($server){
- 	$serverName=$server->getServerName();
- 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
-		$deployArray=json_decode($deployArray);
-		if ($deployArray == null) {
-			loghandler(INFO,'Not able to read the server details');
-		
-	} else {
-		foreach ($deployArray as $i => $detailArray) {
-			if (array_key_exists($serverName, $detailArray)) {
-				unset ($deployArray[$i]);
-				
-			}
-		}
-		$deployArray = array_values($deployArray);
+ function updateServer($server,$serverid){
+ 	
  	$dataArray = array (
 	
 			"description" => $server->getDescription(),
@@ -199,47 +205,35 @@ require_once ("AppErrorLogHandler.php");
 		"publicKeyLoc" => $server->getPublicKeyLoc(),
 		"loginUser" => $server->getLoginUser(),
 		"serverType" => $server->getServerType(),
-		"assettype" => $server->getAssettype(),
+		"type" => "server",
 		"status" => $server->getStatus(),
 		"starttime" => $server->getStarttime(),
 		"provider" => $server->getProvider(),
 		"region" => $server->getRegion(),
 		"cmserver" => $server->getCmserver(),
-		"assetname" => $server->getAssetname(),
+		"name" => $server->getServerName(),
 		"instancesize" => $server->getInstancesize(),
 		"password"=>$server->getPassword(),
 		"sshport"=>$server->getSSHPort(),
  			"tier"=>$server->getTier()
 	);
+ 	
+ 	
 
-	$detailArray1[$server->getServerName()] = $dataArray;
-	array_push($deployArray, $detailArray1);
+	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$serverid;
 	
-	$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(), $deployArray);
-		}
+	return $this->cmDataManager->updateDataForContext($serverurl,$this->appContext->getAPIKey(),$dataArray);
+	
  }
  
  /**
   * This method is to delete server from cloudmunch.
   * @param  $serverName Name of server.
   */
- function deleteServer($serverName){
- 	$deployArray=$this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
-		$deployArray=json_decode($deployArray);
-		if ($deployArray == null) {
-			loghandler(INFO,'Not able to read the server details');
-		
-	} else {
-		foreach ($deployArray as $i => $detailArray) {
-			if (array_key_exists($serverName, $detailArray)) {
-				unset ($deployArray[$i]);
-				
-			}
-		}
-		$deployArray = array_values($deployArray);
-		$this->cmDataManager->updateContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName(),$deployArray);
-		
-	}
+ function deleteServer($assetID){
+ 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$assetID;
+	
+	return $this->cmDataManager->deleteDataForContext($serverurl,$this->appContext->getAPIKey());
  	
  }
  
@@ -249,20 +243,21 @@ require_once ("AppErrorLogHandler.php");
   * @return boolean
   */
  function checkServerExists($servername){
- 	$deployArray = $this->cmDataManager->getDataForContext($this->appContext->getMasterURL(), "server", $this->appContext->getDomainName());
+ 	$serverurl=$this->appContext->getMasterURL()."/applications/".$this->appContext->getProject()."/assets/".$servername;
+ 	$deployArray = $this->cmDataManager->getDataForContext($serverurl, $this->appContext->getAPIKey(),"");
+	if($deployArray === false){
+		return false;
+	}
+	//$deployArray = json_decode($deployArray);
+	$detailArray=$deployArray->data;
+
+	if ($detailArray == null) {
+		return false;
+	}else{
+		return true;
+	}
+
 	
-	$deployArray = json_decode($deployArray);
-
-	if ($deployArray == null) {
-		$deployArray = array ();
-	}
-
-	foreach ($deployArray as $i => $detailArray) {
-		if (array_key_exists($servername, $detailArray)) {
-			return true;
-		}
-	}
-	return false;
  }
  
 /**
@@ -279,10 +274,11 @@ function checkConnect($dns,$sshport = 22) {
 
 	do {
 	    if (($dns == null) || ($dns == '')) {
-	        trigger_error("Invalid dns" . $dns, E_USER_ERROR);
+	        $this->logHelper->log(ERROR, "Invalid dns" . $dns);
+	        return false;
 	    }
 
-	    loghandler(INFO, "Checking connectivity to: " . $dns);
+	    $this->logHelper->log(INFO, "Checking connectivity to: " . $dns);
 
 	    $connection = ssh2_connect($dns, $sshport);
 	    if (!$connection) {
@@ -292,7 +288,8 @@ function checkConnect($dns,$sshport = 22) {
 	} while ((!$connection) && (time() < $connectionTimeout));
 
 	if (!$connection) {
-	    trigger_error("Failed to connect to " . $dns, E_USER_ERROR);
+	    $this->logHelper->log(ERROR, "Failed to connect to " . $dns);
+	    return false;
 	}
 }
  

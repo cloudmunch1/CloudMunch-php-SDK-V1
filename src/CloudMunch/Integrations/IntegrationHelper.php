@@ -15,6 +15,7 @@ namespace CloudMunch\Integrations;
  *
  */
   class IntegrationHelper{
+  	private $logHelper=null;
   	
   	/**
   	 * This method process plugin input to retreive the provider details.
@@ -23,6 +24,10 @@ namespace CloudMunch\Integrations;
   	 *         
   	 */
  	
+  	
+  	public function __construct($logHandler){
+  	 $this->logHelper=	$logHandler;
+  	}
  	function getService($jsonParams){
  		
  		$arg10 = 'cloudproviders';
@@ -30,7 +35,7 @@ namespace CloudMunch\Integrations;
 		$cloudproviders=json_decode($cloudproviders);
 		$arg1 = 'providername';
 		$provname = $jsonParams-> $arg1;
-		loghandler(DEBUG, "Provider Name: ".$provname);
+		//$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
 	    $provtype="providerType";
 	    
 	   
@@ -42,7 +47,7 @@ namespace CloudMunch\Integrations;
 	  // $regfields= $integration->$type->registrationFields;
 	   $integrationdetails=array();
 	    foreach ($regfields as $key=>$value){
-	    	$integrationdetails[$key]=$cloudproviders->$provname->$key;
+	    	$integrationdetails[$key]=$value;
 	    	
 	    }
 	  return $integrationdetails;
@@ -50,6 +55,49 @@ namespace CloudMunch\Integrations;
 	    	return null;
 	    }
  		
+ 	}
+ 	
+ 	function getIntegration($jsonParams,$integrations){
+ 		$arg1 = 'providername';
+ 		$provname = $jsonParams-> $arg1;
+ 		
+ 	//	$this->logHelper->log(DEBUG, "Provider Name: ".$provname);
+ 		
+ 		
+ 		if(($provname != null) && (strlen(trim($provname))>0)){
+ 			//$tpe="type";
+ 			$conf="configuration";
+ 			//$type=$integrations->$provname->$tpe;
+ 			$regfields=$integrations->$provname->$conf;
+ 			$integrationdetails=array();
+ 			foreach ($regfields as $key=>$value){
+ 				$integrationdetails[$key]=$value;
+ 			
+ 			}
+ 			return $integrationdetails;
+ 		
+ 		}else{
+ 			return null;
+ 		}
+ 		
+ 	}
+ 	
+ 	function getIntegrationData($cloudmunchservice,$jsonParams){
+ 		$arg1 = 'providername';
+ 		$provname = $jsonParams-> $arg1;
+ 		$contextArray = array('integrations' => $provname);
+ 		$data = $cloudmunchservice->getCustomContextData($contextArray, null);
+ 		if ($data->configuration){
+ 			$regfields= $data->configuration;
+ 			$integrationdetails=array();
+ 			foreach ($regfields as $key=>$value){
+ 				$integrationdetails[$key]=$value;
+ 		
+ 			}
+ 			return $integrationdetails;
+ 		} else {
+ 			return null;
+ 		}
  	}
  }
 ?>
